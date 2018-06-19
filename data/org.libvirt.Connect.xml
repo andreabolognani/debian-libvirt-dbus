@@ -1,0 +1,315 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<node name="/org/libvirt/connect">
+  <interface name="org.libvirt.Connect">
+    <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+    <property name="Encrypted" type="b" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virConnectIsEncrypted
+               Note that monitoring of traffic on the D-Bus message bus is out of the scope of this property"/>
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="const"/>
+    </property>
+    <property name="Hostname" type="s" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virConnectGetHostname"/>
+    </property>
+    <property name="LibVersion" type="t" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virConnectGetLibVersion"/>
+    </property>
+    <property name="Secure" type="b" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virConnectIsSecure
+               Note that monitoring of traffic on the D-Bus message bus is out of the scope of this property"/>
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="const"/>
+    </property>
+    <property name="Version" type="t" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virConnectGetVersion"/>
+    </property>
+    <method name="BaselineCPU">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virConnectBaselineCPU"/>
+      <arg name="xmlCPUs" type="as" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="cpu" type="s" direction="out"/>
+    </method>
+    <method name="CompareCPU">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virConnectCompareCPU"/>
+      <arg name="xmlDesc" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="compareResult" type="i" direction="out"/>
+    </method>
+    <method name="DomainCreateXML">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainCreateXML"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="domain" type="o" direction="out"/>
+    </method>
+    <method name="DomainCreateXMLWithFiles">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainCreateXMLWithFiles"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="files" type="ah" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="domain" type="o" direction="out"/>
+    </method>
+    <method name="DomainDefineXML">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainDefineXML"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="domain" type="o" direction="out"/>
+    </method>
+    <method name="DomainLookupByID">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainLookupByID"/>
+      <arg name="id" type="i" direction="in"/>
+      <arg name="domain" type="o" direction="out"/>
+    </method>
+    <method name="DomainLookupByName">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainLookupByName"/>
+      <arg name="name" type="s" direction="in"/>
+      <arg name="domain" type="o" direction="out"/>
+    </method>
+    <method name="DomainLookupByUUID">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainLookupByUUIDString"/>
+      <arg name="uuid" type="s" direction="in"/>
+      <arg name="domain" type="o" direction="out"/>
+    </method>
+    <method name="DomainRestore">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainRestoreFlags
+               Empty string can be used to pass a NULL as @xml argument."/>
+      <arg name="from" type="s" direction="in"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="DomainSaveImageDefineXML">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSaveImageDefineXML"/>
+      <arg name="file" type="s" direction="in"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="DomainSaveImageGetXMLDesc">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSaveImageGetXMLDesc"/>
+      <arg name="file" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="xml" type="s" direction="out"/>
+    </method>
+    <method name="FindStoragePoolSources">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virConnectFindStoragePoolSources
+               Empty string can be used to pass a NULL as @srcSpec argument."/>
+      <arg name="type" type="s" direction="in"/>
+      <arg name="srcSpec" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="storagePoolSources" type="s" direction="out"/>
+    </method>
+    <method name="GetAllDomainStats">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectGetAllDomainStats"/>
+      <arg name="stats" type="u" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="records" type="a(sa{sv})" direction="out"/>
+    </method>
+    <method name="GetCapabilities">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virConnectGetCapabilities"/>
+      <arg name="capabilities" type="s" direction="out"/>
+    </method>
+    <method name="GetCPUModelNames">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virConnectGetCPUModelNames"/>
+      <arg name="arch" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="models" type="as" direction="out"/>
+    </method>
+    <method name="GetDomainCapabilities">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectGetDomainCapabilities
+               Empty string can be used to pass a NULL as @emulatorbin, @arch, @machine or @virttype argument."/>
+      <arg name="emulatorbin" type="s" direction="in"/>
+      <arg name="arch" type="s" direction="in"/>
+      <arg name="machine" type="s" direction="in"/>
+      <arg name="virttype" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="domCapabilities" type="s" direction="out"/>
+    </method>
+    <method name="GetSysinfo">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virConnectGetSysinfo"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="sysinfo" type="s" direction="out"/>
+    </method>
+    <method name="ListDomains">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectListAllDomains"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="domains" type="ao" direction="out"/>
+    </method>
+    <method name="ListNetworks">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-network.html#virConnectListAllNetworks"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="networks" type="ao" direction="out"/>
+    </method>
+    <method name="ListSecrets">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-secret.html#virConnectListAllSecrets"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="secrets" type="ao" direction="out"/>
+    </method>
+    <method name="ListStoragePools">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virConnectListAllStoragePools"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="storagePools" type="ao" direction="out"/>
+    </method>
+    <method name="NetworkCreateXML">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-network.html#virNetworkCreateXML"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="network" type="o" direction="out"/>
+    </method>
+    <method name="NetworkDefineXML">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-network.html#virNetworkDefineXML"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="network" type="o" direction="out"/>
+    </method>
+    <method name="NetworkLookupByName">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-network.html#virNetworkLookupByName"/>
+      <arg name="name" type="s" direction="in"/>
+      <arg name="network" type="o" direction="out"/>
+    </method>
+    <method name="NetworkLookupByUUID">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-network.html#virNetworkLookupByUUIDString"/>
+      <arg name="uuid" type="s" direction="in"/>
+      <arg name="network" type="o" direction="out"/>
+    </method>
+    <method name="NodeGetCPUMap">
+      <annotation name="org.gtk.GDBus.DocString"
+          value="See https://libvirt.org/html/libvirt-libvirt-host.html#virNodeGetCPUMap"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="res" type="ab" direction="out"/>
+    </method>
+    <method name="NodeGetCPUStats">
+      <annotation name="org.gtk.GDBus.DocString"
+          value="See https://libvirt.org/html/libvirt-libvirt-host.html#virNodeGetCPUStats"/>
+      <arg name="cpuNum" type="i" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="cpuStats" type="a{st}" direction="out"/>
+    </method>
+    <method name="NodeGetFreeMemory">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virNodeGetFreeMemory"/>
+      <arg name="freemem" type="t" direction="out"/>
+    </method>
+    <method name="NodeGetMemoryParameters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virNodeGetMemoryParameters"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="memoryParameters" type="a{sv}" direction="out"/>
+    </method>
+    <method name="NodeGetMemoryStats">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virNodeGetMemoryStats"/>
+      <arg name="cellNum" type="i" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="stats" type="a{st}" direction="out"/>
+    </method>
+    <method name="NodeGetSecurityModel">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virNodeGetSecurityModel"/>
+      <arg name="secModel" type="(ss)" direction="out"/>
+    </method>
+    <method name="NodeSetMemoryParameters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-host.html#virNodeSetMemoryParameters"/>
+      <arg name="params" type="a{sv}" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SecretDefineXML">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-secret.html#virSecretDefineXML"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="secret" type="o" direction="out"/>
+    </method>
+    <method name="SecretLookupByUUID">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-secret.html#virSecretLookupByUUIDString"/>
+      <arg name="uuid" type="s" direction="in"/>
+      <arg name="secret" type="o" direction="out"/>
+    </method>
+    <method name="SecretLookupByUsage">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-secret.html#virSecretLookupByUsage"/>
+      <arg name="usageType" type="i" direction="in"/>
+      <arg name="usageID" type="s" direction="in"/>
+      <arg name="secret" type="o" direction="out"/>
+    </method>
+    <method name="StoragePoolCreateXML">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStoragePoolCreateXML"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="storagePool" type="o" direction="out"/>
+    </method>
+    <method name="StoragePoolDefineXML">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStoragePoolDefineXML"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="storagePool" type="o" direction="out"/>
+    </method>
+    <method name="StoragePoolLookupByName">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStoragePoolLookupByName"/>
+      <arg name="name" type="s" direction="in"/>
+      <arg name="storagePool" type="o" direction="out"/>
+    </method>
+    <method name="StoragePoolLookupByUUID">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStoragePoolLookupByUUIDString"/>
+      <arg name="uuid" type="s" direction="in"/>
+      <arg name="storagePool" type="o" direction="out"/>
+    </method>
+    <signal name="DomainEvent">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventCallback"/>
+      <arg name="domain" type="o"/>
+      <arg name="event" type="i"/>
+      <arg name="detail" type="i"/>
+    </signal>
+    <signal name="NetworkEvent">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-network.html#virConnectNetworkEventLifecycleCallback"/>
+      <arg name="network" type="o"/>
+      <arg name="event" type="i"/>
+    </signal>
+    <signal name="SecretEvent">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-secret.html#virConnectSecretEventLifecycleCallback"/>
+      <arg name="secret" type="o"/>
+      <arg name="event" type="i"/>
+      <arg name="detail" type="i"/>
+    </signal>
+    <signal name="StoragePoolEvent">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virConnectStoragePoolEventLifecycleCallback"/>
+      <arg name="storagePool" type="o"/>
+      <arg name="event" type="i"/>
+      <arg name="detail" type="i"/>
+    </signal>
+  </interface>
+</node>

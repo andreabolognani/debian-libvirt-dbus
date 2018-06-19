@@ -1,0 +1,727 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<node name="/org/libvirt/domain">
+  <interface name="org.libvirt.Domain">
+    <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+    <property name="Active" type="b" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainIsActive"/>
+    </property>
+    <property name="Autostart" type="b" access="readwrite">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetAutostart and
+               https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetAutostart"/>
+    </property>
+    <property name="Id" type="u" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetID"/>
+    </property>
+    <property name="Name" type="s" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetName"/>
+    </property>
+    <property name="OSType" type="s" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetOSType"/>
+    </property>
+    <property name="Persistent" type="b" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainIsPersistent"/>
+    </property>
+    <property name="SchedulerType" type="(si)" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetSchedulerType"/>
+    </property>
+    <property name="Updated" type="b" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainIsUpdated"/>
+    </property>
+    <property name="UUID" type="s" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetUUIDString"/>
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="const"/>
+    </property>
+    <method name="AbortJob">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainAbortJob"/>
+    </method>
+    <method name="AddIOThread">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainAddIOThread"/>
+      <arg name="iothreadId" type="u" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="AttachDevice">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainAttachDeviceFlags"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="BlockCommit">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainBlockCommit"/>
+      <arg name="disk" type="s" direction="in"/>
+      <arg name="base" type="s" direction="in"/>
+      <arg name="top" type="s" direction="in"/>
+      <arg name="bandwidth" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="BlockCopy">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainBlockCopy"/>
+      <arg name="disk" type="s" direction="in"/>
+      <arg name="destxml" type="s" direction="in"/>
+      <arg name="params" type="a{sv}" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="BlockJobAbort">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainBlockJobAbort"/>
+      <arg name="disk" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="BlockPeek">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainBlockPeek"/>
+      <arg name="disk" type="s" direction="in"/>
+      <arg name="offset" type="t" direction="in"/>
+      <arg name="size" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="buffer" type="ay" direction="out"/>
+    </method>
+    <method name="BlockPull">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainBlockPull"/>
+      <arg name="disk" type="s" direction="in"/>
+      <arg name="bandwidth" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="BlockRebase">
+      <annotation name="org.gtk.GDBus.DocString"
+          value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainBlockRebase
+                 Empty string can be used to pass a NULL as @base argument."/>
+      <arg name="disk" type="s" direction="in"/>
+      <arg name="base" type="s" direction="in"/>
+      <arg name="bandwidth" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="BlockResize">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainBlockResize"/>
+      <arg name="disk" type="s" direction="in"/>
+      <arg name="size" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="BlockJobSetSpeed">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainBlockJobSetSpeed"/>
+      <arg name="disk" type="s" direction="in"/>
+      <arg name="bandwidth" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="CoreDump">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainCoreDumpWithFormat"/>
+      <arg name="to" type="s" direction="in"/>
+      <arg name="dumpformat" type="u" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="Create">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainCreateWithFlags"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="CreateWithFiles">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainCreateWithFiles"/>
+      <arg name="files" type="ah" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="DelIOThread">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainDelIOThread"/>
+      <arg name="iothreadId" type="u" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="Destroy">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainDestroyFlags"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="DetachDevice">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainDetachDeviceFlags"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="FSFreeze">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainFSFreeze"/>
+      <arg name="mountpoints" type="as" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="frozenFilesystems" type="u" direction="out"/>
+    </method>
+    <method name="FSThaw">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainFSThaw"/>
+      <arg name="mountpoints" type="as" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="thawedFilesystems" type="u" direction="out"/>
+    </method>
+    <method name="FSTrim">
+      <annotation name="org.gtk.GDBus.DocString"
+          value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainFSTrim
+                 Empty string can be used to pass a NULL as @mountpoint argument."/>
+      <arg name="mountpoint" type="s" direction="in"/>
+      <arg name="minimum" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="GetBlockIOParameters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetBlkioParameters"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="BlkioParameters" type="a{sv}" direction="out"/>
+    </method>
+    <method name="GetBlockIOTune">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetBlockIoTune"/>
+      <arg name="disk" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="blockIOTune" type="a{sv}" direction="out"/>
+    </method>
+    <method name="GetBlockJobInfo">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetBlockJobInfo"/>
+      <arg name="disk" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="blockJobInfo" type="(ittt)" direction="out"/>
+    </method>
+    <method name="GetControlInfo">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetControlInfo"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="controlInfo" type="(uut)" direction="out"/>
+    </method>
+    <method name="GetDiskErrors">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetDiskErrors"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="diskErrors" type="a(si)" direction="out"/>
+    </method>
+    <method name="GetEmulatorPinInfo">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetEmulatorPinInfo"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="cpumap" type="ab" direction="out"/>
+    </method>
+    <method name="GetFSInfo">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetFSInfo"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="fsInfo" type="a(sssas)" direction="out"/>
+    </method>
+    <method name="GetGuestVcpus">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetGuestVcpus"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="vcpus" type="a{sv}" direction="out"/>
+    </method>
+    <method name="GetHostname">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetHostname"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="hostname" type="s" direction="out"/>
+    </method>
+    <method name="GetInterfaceParameters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetInterfaceParameters"/>
+      <arg name="device" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="interfaceParameters" type="a{sv}" direction="out"/>
+    </method>
+    <method name="GetIOThreadInfo">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetIOThreadInfo"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="ioThreadInfo" type="a(uab)" direction="out"/>
+    </method>
+    <method name="GetJobInfo">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetJobInfo"/>
+      <arg name="jobInfo" type="(ittttttttttt)" direction="out"/>
+    </method>
+    <method name="GetJobStats">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetJobStats"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="stats" type="(ia{sv})" direction="out"/>
+    </method>
+    <method name="GetMemoryParameters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetMemoryParameters"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="memoryParameters" type="a{sv}" direction="out"/>
+    </method>
+    <method name="GetMetadata">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetMetadata
+               Empty string can be used to pass a NULL as @uri argument."/>
+      <arg name="type" type="i" direction="in"/>
+      <arg name="uri" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="metadata" type="s" direction="out"/>
+    </method>
+    <method name="GetNumaParameters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetNumaParameters"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="numaParameters" type="a{sv}" direction="out"/>
+    </method>
+    <method name="GetPerfEvents">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetPerfEvents"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="perfEvents" type="a{sv}" direction="out"/>
+    </method>
+    <method name="GetSchedulerParameters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetSchedulerParametersFlags"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="SchedulerParameters" type="a{sv}" direction="out"/>
+    </method>
+    <method name="GetSecurityLabelList">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetSecurityLabelList"/>
+      <arg name="securityLabels" type="a(sb)" direction="out"/>
+    </method>
+    <method name="GetState">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetState"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="state" type="(ii)" direction="out"/>
+    </method>
+    <method name="GetStats">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainListGetStats"/>
+      <arg name="stats" type="u" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="records" type="a{sv}" direction="out"/>
+    </method>
+    <method name="GetTime">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetTime"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="time" type="(tu)" direction="out"/>
+    </method>
+    <method name="GetVcpuPinInfo">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetVcpuPinInfo"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="vcpuPinInfo" type="aab" direction="out"/>
+    </method>
+    <method name="GetVcpus">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetVcpusFlags"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="vcpus" type="u" direction="out"/>
+    </method>
+    <method name="GetXMLDesc">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetXMLDesc"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="xml" type="s" direction="out"/>
+    </method>
+    <method name="HasManagedSaveImage">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainHasManagedSaveImage"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="managedSaveImage" type="b" direction="out"/>
+    </method>
+    <method name="InjectNMI">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainInjectNMI"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="InterfaceAddresses">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainInterfaceAddresses"/>
+      <arg name="source" type="u" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="ifaces" type="a(ssa(isu))" direction="out"/>
+    </method>
+    <method name="ManagedSave">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainManagedSave"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="ManagedSaveRemove">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainManagedSaveRemove"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="MemoryPeek">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainMemoryPeek"/>
+      <arg name="offset" type="t" direction="in"/>
+      <arg name="size" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="buffer" type="ay" direction="out"/>
+    </method>
+    <method name="MemoryStats">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainMemoryStats"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="stats" type="a{it}" direction="out"/>
+    </method>
+    <method name="MigrateGetCompressionCache">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainMigrateGetCompressionCache"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="cacheSize" type="t" direction="out"/>
+    </method>
+    <method name="MigrateGetMaxSpeed">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainMigrateGetMaxSpeed"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="bandwidth" type="t" direction="out"/>
+    </method>
+    <method name="MigrateSetCompressionCache">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainMigrateSetCompressionCache"/>
+      <arg name="cacheSize" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="MigrateSetMaxDowntime">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainMigrateSetMaxDowntime"/>
+      <arg name="downtime" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="MigrateSetMaxSpeed">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainMigrateSetMaxSpeed"/>
+      <arg name="bandwidth" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="MigrateStartPostCopy">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainMigrateStartPostCopy"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="MigrateToURI3">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainMigrateToURI3"/>
+      <arg name="dconuri" type="s" direction="in"/>
+      <arg name="params" type="a{sv}" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="OpenGraphicsFD">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainOpenGraphicsFD"/>
+      <arg name="idx" type="u" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="fd" type="h" direction="out"/>
+    </method>
+    <method name="PinEmulator">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainPinEmulator"/>
+      <arg name="cpumap" type="ab" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="PinIOThread">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainPinIOThread"/>
+      <arg name="iothreadId" type="u" direction="in"/>
+      <arg name="cpumap" type="ab" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="PinVcpu">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainPinVcpuFlags"/>
+      <arg name="vcpu" type="u" direction="in"/>
+      <arg name="cpumap" type="ab" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="PMWakeup">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainPMWakeup"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="Reboot">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainReboot"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="Rename">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainRename"/>
+      <arg name="name" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="Reset">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainReset"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="Resume">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainResume"/>
+    </method>
+    <method name="Save">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSaveFlags
+               Empty string can be used to pass a NULL as @xml argument."/>
+      <arg name="to" type="s" direction="in"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SendKey">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSendKey"/>
+      <arg name="codeset" type="u" direction="in"/>
+      <arg name="holdtime" type="u" direction="in"/>
+      <arg name="keycodes" type="au" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SendProcessSignal">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSendProcessSignal"/>
+      <arg name="pidValue" type="x" direction="in"/>
+      <arg name="sigNum" type="u" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetBlockIOParameters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetBlkioParameters"/>
+      <arg name="params" type="a{sv}" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetBlockIOTune">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetBlockIoTune"/>
+      <arg name="disk" type="s" direction="in"/>
+      <arg name="params" type="a{sv}" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetGuestVcpus">
+      <annotation name="org.gtk.GDBus.DocString"
+          value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetGuestVcpus"/>
+      <arg name="vcpumap" type="ab" direction="in"/>
+      <arg name="state" type="i" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetInterfaceParameters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetInterfaceParameters"/>
+      <arg name="device" type="s" direction="in"/>
+      <arg name="params" type="a{sv}" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetMemory">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetMemoryFlags"/>
+      <arg name="memory" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetMemoryParameters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetMemoryParameters"/>
+      <arg name="params" type="a{sv}" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetMemoryStatsPeriod">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetMemoryStatsPeriod"/>
+      <arg name="period" type="i" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetMetadata">
+      <annotation name="org.gtk.GDBus.DocString"
+          value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetMetadata
+                 Empty string can be used to pass a NULL as @key or @uri argument."/>
+      <arg name="type" type="i" direction="in"/>
+      <arg name="metadata" type="s" direction="in"/>
+      <arg name="key" type="s" direction="in"/>
+      <arg name="uri" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetNumaParameters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetNumaParameters"/>
+      <arg name="params" type="a{sv}" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetPerfEvents">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetPerfEvents"/>
+      <arg name="params" type="a{sv}" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetSchedulerParameters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetSchedulerParametersFlags"/>
+      <arg name="params" type="a{sv}" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetUserPassword">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetUserPassword"/>
+      <arg name="user" type="s" direction="in"/>
+      <arg name="password" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetTime">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetTime"/>
+      <arg name="seconds" type="t" direction="in"/>
+      <arg name="nseconds" type="u" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="SetVcpus">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSetVcpusFlags"/>
+      <arg name="vcpus" type="u" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="Shutdown">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainShutdownFlags"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="Suspend">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainSuspend"/>
+    </method>
+    <method name="Undefine">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainUndefineFlags"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="UpdateDevice">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainUpdateDeviceFlags"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <signal name="AgentEvent">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventAgentLifecycleCallback"/>
+      <arg name="state" type="i"/>
+      <arg name="reason" type="i"/>
+    </signal>
+    <signal name="BalloonChange">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventBalloonChangeCallback"/>
+      <arg name="actual" type="t"/>
+    </signal>
+    <signal name="BlockJob">
+      <annotation name="org.gtk.GDBus.DocString"
+          value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventBlockJobCallback
+                 Callback was registered using VIR_DOMAIN_EVENT_ID_BLOCK_JOB_2"/>
+      <arg name="disk" type="s"/>
+      <arg name="type" type="i"/>
+      <arg name="status" type="i"/>
+    </signal>
+    <signal name="ControlError">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventGenericCallback"/>
+    </signal>
+    <signal name="DeviceAdded">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventDeviceAddedCallback"/>
+      <arg name="device" type="s"/>
+    </signal>
+    <signal name="DeviceRemovalFailed">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventDeviceRemovalFailedCallback"/>
+      <arg name="device" type="s"/>
+    </signal>
+    <signal name="DeviceRemoved">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventDeviceRemovedCallback"/>
+      <arg name="device" type="s"/>
+    </signal>
+    <signal name="DiskChange">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventDiskChangeCallback"/>
+      <arg name="oldSrcPath" type="s"/>
+      <arg name="newSrcPath" type="s"/>
+      <arg name="device" type="s"/>
+      <arg name="reason" type="i"/>
+    </signal>
+    <signal name="Graphics">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventGraphicsCallback"/>
+      <arg name="phase" type="i"/>
+      <arg name="local" type="(iss)"/>
+      <arg name="remote" type="(iss)"/>
+      <arg name="authScheme" type="s"/>
+      <arg name="identities" type="a(ss)"/>
+    </signal>
+    <signal name="IOError">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventIOErrorReasonCallback"/>
+      <arg name="srcPath" type="s"/>
+      <arg name="device" type="s"/>
+      <arg name="action" type="i"/>
+      <arg name="reason" type="s"/>
+    </signal>
+    <signal name="JobCompleted">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventJobCompletedCallback"/>
+      <arg name="params" type="a{sv}"/>
+    </signal>
+    <signal name="MetadataChange">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventMetadataChangeCallback"/>
+      <arg name="type" type="i"/>
+      <arg name="nsuri" type="s"/>
+    </signal>
+    <signal name="MigrationIteration">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventMigrationIterationCallback"/>
+      <arg name="iteration" type="i"/>
+    </signal>
+    <signal name="PMSuspend">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventPMSuspendCallback"/>
+      <arg name="reason" type="i"/>
+    </signal>
+    <signal name="PMSuspendDisk">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventPMSuspendDiskCallback"/>
+      <arg name="reason" type="i"/>
+    </signal>
+    <signal name="PMWakeup">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventPMWakeupCallback"/>
+      <arg name="reason" type="i"/>
+    </signal>
+    <signal name="Reboot">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventGenericCallback"/>
+    </signal>
+    <signal name="RTCChange">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventRTCChangeCallback"/>
+      <arg name="utcoffset" type="x"/>
+    </signal>
+    <signal name="TrayChange">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventTrayChangeCallback"/>
+      <arg name="device" type="s"/>
+      <arg name="reason" type="i"/>
+    </signal>
+    <signal name="Tunable">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventTunableCallback"/>
+      <arg name="params" type="a{sv}"/>
+    </signal>
+    <signal name="Watchdog">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventWatchdogCallback"/>
+      <arg name="action" type="i"/>
+    </signal>
+  </interface>
+</node>
