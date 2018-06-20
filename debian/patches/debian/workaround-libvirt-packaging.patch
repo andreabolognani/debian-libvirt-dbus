@@ -1,0 +1,21 @@
+Description: Workaround libvirt packaging
+ This is needed for the test suite to pass until libvirt0 has
+ been fixed to include the relevant data files.
+Forwarded: https://salsa.debian.org/libvirt-team/libvirt/merge_requests/4
+Author: Andrea Bolognani <eof@kiyuko.org>
+Last-Update: 2018-06-28
+Index: libvirt-dbus/tests/test_connect.py
+===================================================================
+--- libvirt-dbus.orig/tests/test_connect.py
++++ libvirt-dbus/tests/test_connect.py
+@@ -99,10 +99,6 @@ class TestConnect(libvirttest.BaseTestCl
+     def test_connect_get_capabilities(self):
+         assert isinstance(self.connect.GetCapabilities(), dbus.String)
+ 
+-    def test_connect_get_cpu_model_names(self):
+-        arch = "x86_64"
+-        assert isinstance(self.connect.GetCPUModelNames(arch, 0), dbus.Array)
+-
+     def test_connect_list_storage_pools(self):
+         storage_pools = self.connect.ListStoragePools(0)
+         assert isinstance(storage_pools, dbus.Array)
