@@ -1,0 +1,51 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<node name="/org/libvirt/storagevol">
+  <interface name="org.libvirt.StorageVol">
+    <property name="Name" type="s" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+          value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStorageVolGetName"/>
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="const"/>
+    </property>
+    <property name="Key" type="s" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+          value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStorageVolGetKey"/>
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="const"/>
+    </property>
+    <property name="Path" type="s" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+          value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStorageVolGetPath"/>
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="const"/>
+    </property>
+    <method name="Delete">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStorageVolDelete"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="GetInfo">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStorageVolGetInfoFlags"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="info" type="(itt)" direction="out"/>
+    </method>
+    <method name="GetXMLDesc">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStorageVolGetXMLDesc"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="xml" type="s" direction="out"/>
+    </method>
+    <method name="Resize">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStorageVolResize"/>
+      <arg name="capacity" type="t" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="Wipe">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStorageVolWipePattern"/>
+      <arg name="pattern" type="u" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+  </interface>
+</node>

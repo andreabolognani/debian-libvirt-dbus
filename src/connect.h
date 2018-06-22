@@ -12,15 +12,19 @@ struct virtDBusConnect {
     GDBusConnection *bus;
     const gchar *uri;
     const gchar *connectPath;
+    gchar *nodeDevPath;
     gchar *domainPath;
     gchar *networkPath;
+    gchar *nwfilterPath;
     gchar *secretPath;
     gchar *storagePoolPath;
+    gchar *storageVolPath;
     virConnectPtr connection;
     GMutex lock;
 
     gint domainCallbackIds[VIR_DOMAIN_EVENT_ID_LAST];
     gint networkCallbackIds[VIR_NETWORK_EVENT_ID_LAST];
+    gint nodeDevCallbackIds[VIR_NODE_DEVICE_EVENT_ID_LAST];
     gint secretCallbackIds[VIR_SECRET_EVENT_ID_LAST];
     gint storagePoolCallbackIds[VIR_STORAGE_POOL_EVENT_ID_LAST];
 };

@@ -3,43 +3,10 @@
 import dbus
 import libvirttest
 import pytest
+import xmldata
 
 
 class TestConnect(libvirttest.BaseTestClass):
-    minimal_domain_xml = '''
-    <domain type="test">
-      <name>foo</name>
-      <memory>1024</memory>
-      <os>
-        <type>hvm</type>
-      </os>
-    </domain>
-    '''
-
-    minimal_network_xml = '''
-    <network>
-      <name>bar</name>
-      <uuid>004b96e12d78c30f5aa5f03c87d21e69</uuid>
-      <bridge name='brdefault'/>
-      <forward dev='eth0'/>
-      <ip address='192.168.122.1' netmask='255.255.255.0'>
-        <dhcp>
-          <range start='192.168.122.128' end='192.168.122.253'/>
-        </dhcp>
-      </ip>
-    </network>
-    '''
-
-    minimal_storage_pool_xml = '''
-    <pool type='dir'>
-      <name>foo</name>
-      <uuid>35bb2ad9-388a-cdfe-461a-b8907f6e53fe</uuid>
-      <target>
-        <path>/foo</path>
-      </target>
-    </pool>
-    '''
-
     def test_connect_domain_create_xml(self):
         def domain_started(path, event, detail):
             if event != libvirttest.DomainEvent.STARTED:
@@ -50,7 +17,7 @@ class TestConnect(libvirttest.BaseTestClass):
 
         self.connect.connect_to_signal('DomainEvent', domain_started)
 
-        path = self.connect.DomainCreateXML(self.minimal_domain_xml, 0)
+        path = self.connect.DomainCreateXML(xmldata.minimal_domain_xml, 0)
         assert isinstance(path, dbus.ObjectPath)
 
         self.main_loop()
@@ -65,7 +32,7 @@ class TestConnect(libvirttest.BaseTestClass):
 
         self.connect.connect_to_signal('DomainEvent', domain_defined)
 
-        path = self.connect.DomainDefineXML(self.minimal_domain_xml)
+        path = self.connect.DomainDefineXML(xmldata.minimal_domain_xml)
         assert isinstance(path, dbus.ObjectPath)
 
         self.main_loop()
@@ -79,7 +46,7 @@ class TestConnect(libvirttest.BaseTestClass):
         """Parameterized test for all DomainLookupBy* API calls of Connect interface
         """
         original_path = self.connect.ListDomains(0)[0]
-        obj, _ = self.domain()
+        obj, _ = self.get_test_domain()
         props = obj.GetAll('org.libvirt.Domain', dbus_interface=dbus.PROPERTIES_IFACE)
         path = getattr(self.connect, lookup_method_name)(props[lookup_item])
         assert original_path == path
@@ -157,7 +124,7 @@ class TestConnect(libvirttest.BaseTestClass):
 
         self.connect.connect_to_signal('NetworkEvent', network_started)
 
-        path = self.connect.NetworkCreateXML(self.minimal_network_xml)
+        path = self.connect.NetworkCreateXML(xmldata.minimal_network_xml)
         assert isinstance(path, dbus.ObjectPath)
 
         self.main_loop()
@@ -171,10 +138,23 @@ class TestConnect(libvirttest.BaseTestClass):
 
         self.connect.connect_to_signal('NetworkEvent', network_defined)
 
-        path = self.connect.NetworkDefineXML(self.minimal_network_xml)
+        path = self.connect.NetworkDefineXML(xmldata.minimal_network_xml)
         assert isinstance(path, dbus.ObjectPath)
 
         self.main_loop()
+
+    @pytest.mark.usefixtures("node_device_create")
+    @pytest.mark.parametrize("lookup_method_name,lookup_item", [
+        ("NodeDeviceLookupByName", 'Name'),
+    ])
+    def test_connect_node_device_lookup_by_property(self, lookup_method_name, lookup_item):
+        """Parameterized test for all NodeDeviceLookupBy* API calls of Connect interface
+        """
+        original_path = self.node_device_create()
+        obj = self.bus.get_object('org.libvirt', original_path)
+        prop = obj.Get('org.libvirt.NodeDevice', lookup_item, dbus_interface=dbus.PROPERTIES_IFACE)
+        path = getattr(self.connect, lookup_method_name)(prop)
+        assert original_path == path
 
     @pytest.mark.parametrize("lookup_method_name,lookup_item", [
         ("NetworkLookupByName", 'Name'),
@@ -183,10 +163,24 @@ class TestConnect(libvirttest.BaseTestClass):
     def test_connect_network_lookup_by_property(self, lookup_method_name, lookup_item):
         """Parameterized test for all NetworkLookupBy* API calls of Connect interface
         """
-        original_path, obj = self.test_network()
+        original_path, obj = self.get_test_network()
         prop = obj.Get('org.libvirt.Network', lookup_item, dbus_interface=dbus.PROPERTIES_IFACE)
         path = getattr(self.connect, lookup_method_name)(prop)
         assert original_path == path
+
+    def test_connect_node_device_create_xml(self):
+        def node_device_created(path, event, _detail):
+            if event != libvirttest.NodeDeviceEvent.CREATED:
+                return
+            assert isinstance(path, dbus.ObjectPath)
+            self.loop.quit()
+
+        self.connect.connect_to_signal('NodeDeviceEvent', node_device_created)
+
+        path = self.connect.NodeDeviceCreateXML(xmldata.minimal_node_device_xml, 0)
+        assert isinstance(path, dbus.ObjectPath)
+
+        self.main_loop()
 
     def test_connect_node_get_cpu_stats(self):
         stats = self.connect.NodeGetCPUStats(0, 0)
@@ -210,7 +204,7 @@ class TestConnect(libvirttest.BaseTestClass):
         self.connect.connect_to_signal('StoragePoolEvent', storage_pool_started)
 
         path = self.connect.StoragePoolCreateXML(
-            self.minimal_storage_pool_xml, 0)
+            xmldata.minimal_storage_pool_xml, 0)
         assert isinstance(path, dbus.ObjectPath)
 
         self.main_loop()
@@ -225,7 +219,7 @@ class TestConnect(libvirttest.BaseTestClass):
         self.connect.connect_to_signal('StoragePoolEvent', storage_pool_defined)
 
         path = self.connect.StoragePoolDefineXML(
-            self.minimal_storage_pool_xml, 0)
+            xmldata.minimal_storage_pool_xml, 0)
         assert isinstance(path, dbus.ObjectPath)
 
         self.main_loop()
@@ -239,8 +233,24 @@ class TestConnect(libvirttest.BaseTestClass):
                                                      lookup_item):
         """Parameterized test for all StoragePoolLookupBy* API calls of Connect interface
         """
-        original_path, obj = self.test_storage_pool()
+        original_path, obj = self.get_test_storage_pool()
         prop = obj.Get('org.libvirt.StoragePool', lookup_item,
+                       dbus_interface=dbus.PROPERTIES_IFACE)
+        path = getattr(self.connect, lookup_method_name)(prop)
+        assert original_path == path
+
+    @pytest.mark.usefixtures("storage_volume_create")
+    @pytest.mark.parametrize("lookup_method_name,lookup_item", [
+        ("StorageVolLookupByKey", 'Key'),
+        ("StorageVolLookupByPath", 'Path'),
+    ])
+    def test_connect_storage_vol_lookup_by_property(self,
+                                                    lookup_method_name,
+                                                    lookup_item):
+        """Parameterized test for all StorageVolLookupBy* API calls of Connect interface
+        """
+        original_path, obj = self.get_test_storage_volume()
+        prop = obj.Get('org.libvirt.StorageVol', lookup_item,
                        dbus_interface=dbus.PROPERTIES_IFACE)
         path = getattr(self.connect, lookup_method_name)(prop)
         assert original_path == path

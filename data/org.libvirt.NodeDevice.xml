@@ -1,0 +1,46 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<node name="/org/libvirt/nodedev">
+  <interface name="org.libvirt.NodeDevice">
+    <property name="Name" type="s" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virNodeDeviceGetName"/>
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="const"/>
+    </property>
+    <property name="Parent" type="s" access="read">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virNodeDeviceGetParent"/>
+      <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="const"/>
+    </property>
+    <method name="Destroy">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virNodeDeviceDestroy"/>
+    </method>
+    <method name="Detach">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virNodeDeviceDetachFlags"/>
+      <arg name="driverName" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="GetXMLDesc">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virNodeDeviceGetXMLDesc"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="xml" type="s" direction="out"/>
+    </method>
+    <method name="ListCaps">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virNodeDeviceListCaps"/>
+      <arg name="names" type="as" direction="out"/>
+    </method>
+    <method name="ReAttach">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virNodeDeviceReAttach"/>
+    </method>
+    <method name="Reset">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virNodeDeviceReset"/>
+    </method>
+  </interface>
+</node>

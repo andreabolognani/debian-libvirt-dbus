@@ -2,8 +2,11 @@
 #include "domain.h"
 #include "events.h"
 #include "network.h"
+#include "nodedev.h"
+#include "nwfilter.h"
 #include "secret.h"
 #include "storagepool.h"
+#include "storagevol.h"
 #include "util.h"
 
 #include <gio/gunixfdlist.h>
@@ -59,6 +62,16 @@ virtDBusConnectClose(virtDBusConnect *connect,
                                                     connect->networkCallbackIds[i]);
             }
             connect->networkCallbackIds[i] = -1;
+        }
+    }
+
+    for (gint i = 0; i < VIR_NODE_DEVICE_EVENT_ID_LAST; i++) {
+        if (connect->nodeDevCallbackIds[i] >= 0) {
+            if (deregisterEvents) {
+                virConnectNetworkEventDeregisterAny(connect->connection,
+                                                    connect->nodeDevCallbackIds[i]);
+            }
+            connect->nodeDevCallbackIds[i] = -1;
         }
     }
 
@@ -796,6 +809,80 @@ virtDBusConnectListNetworks(GVariant *inArgs,
 }
 
 static void
+virtDBusConnectListNodeDevices(GVariant *inArgs,
+                               GUnixFDList *inFDs G_GNUC_UNUSED,
+                               const gchar *objectPath G_GNUC_UNUSED,
+                               gpointer userData,
+                               GVariant **outArgs,
+                               GUnixFDList **outFDs G_GNUC_UNUSED,
+                               GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virNodeDevicePtr) devs = NULL;
+    guint flags;
+    GVariantBuilder builder;
+    GVariant *gdevs;
+
+    g_variant_get(inArgs, "(u)", &flags);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    if (virConnectListAllNodeDevices(connect->connection, &devs, flags) < 0)
+        return virtDBusUtilSetLastVirtError(error);
+
+    g_variant_builder_init(&builder, G_VARIANT_TYPE("ao"));
+
+    for (gint i = 0; devs[i]; i++) {
+        g_autofree gchar *path = NULL;
+        path = virtDBusUtilBusPathForVirNodeDevice(devs[i],
+                                                   connect->nodeDevPath);
+
+        g_variant_builder_add(&builder, "o", path);
+    }
+
+    gdevs = g_variant_builder_end(&builder);
+    *outArgs = g_variant_new_tuple(&gdevs, 1);
+}
+
+static void
+virtDBusConnectListNWFilters(GVariant *inArgs,
+                             GUnixFDList *inFDs G_GNUC_UNUSED,
+                             const gchar *objectPath G_GNUC_UNUSED,
+                             gpointer userData,
+                             GVariant **outArgs,
+                             GUnixFDList **outFDs G_GNUC_UNUSED,
+                             GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virNWFilterPtr) nwfilters = NULL;
+    guint flags;
+    GVariantBuilder builder;
+    GVariant *gnwfilters;
+
+    g_variant_get(inArgs, "(u)", &flags);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    if (virConnectListAllNWFilters(connect->connection, &nwfilters, flags) < 0)
+        return virtDBusUtilSetLastVirtError(error);
+
+    g_variant_builder_init(&builder, G_VARIANT_TYPE("ao"));
+
+    for (gint i = 0; nwfilters[i]; i++) {
+        g_autofree gchar *path = NULL;
+        path = virtDBusUtilBusPathForVirNWFilter(nwfilters[i],
+                                                 connect->nwfilterPath);
+
+        g_variant_builder_add(&builder, "o", path);
+    }
+
+    gnwfilters = g_variant_builder_end(&builder);
+    *outArgs = g_variant_new_tuple(&gnwfilters, 1);
+}
+
+static void
 virtDBusConnectListSecrets(GVariant *inArgs,
                            GUnixFDList *inFDs G_GNUC_UNUSED,
                            const gchar *objectPath G_GNUC_UNUSED,
@@ -978,6 +1065,178 @@ virtDBusConnectNetworkLookupByUUID(GVariant *inArgs,
         return virtDBusUtilSetLastVirtError(error);
 
     path = virtDBusUtilBusPathForVirNetwork(network, connect->networkPath);
+
+    *outArgs = g_variant_new("(o)", path);
+}
+
+static void
+virtDBusConnectNodeDeviceCreateXML(GVariant *inArgs,
+                                   GUnixFDList *inFDs G_GNUC_UNUSED,
+                                   const gchar *objectPath G_GNUC_UNUSED,
+                                   gpointer userData,
+                                   GVariant **outArgs,
+                                   GUnixFDList **outFDs G_GNUC_UNUSED,
+                                   GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virNodeDevice) dev = NULL;
+    g_autofree gchar *path = NULL;
+    gchar *xml;
+    guint flags;
+
+    g_variant_get(inArgs, "(&su)", &xml, &flags);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    dev = virNodeDeviceCreateXML(connect->connection, xml, flags);
+    if (!dev)
+        return virtDBusUtilSetLastVirtError(error);
+
+    path = virtDBusUtilBusPathForVirNodeDevice(dev, connect->nodeDevPath);
+
+    *outArgs = g_variant_new("(o)", path);
+}
+
+static void
+virtDBusConnectNodeDeviceLookupByName(GVariant *inArgs,
+                                      GUnixFDList *inFDs G_GNUC_UNUSED,
+                                      const gchar *objectPath G_GNUC_UNUSED,
+                                      gpointer userData,
+                                      GVariant **outArgs,
+                                      GUnixFDList **outFDs G_GNUC_UNUSED,
+                                      GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virNodeDevice) dev = NULL;
+    g_autofree gchar *path = NULL;
+    const gchar *name;
+
+    g_variant_get(inArgs, "(&s)", &name);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    dev = virNodeDeviceLookupByName(connect->connection, name);
+    if (!dev)
+        return virtDBusUtilSetLastVirtError(error);
+
+    path = virtDBusUtilBusPathForVirNodeDevice(dev, connect->nodeDevPath);
+
+    *outArgs = g_variant_new("(o)", path);
+}
+
+static void
+virtDBusConnectNodeDeviceLookupSCSIHostByWWN(GVariant *inArgs,
+                                             GUnixFDList *inFDs G_GNUC_UNUSED,
+                                             const gchar *objectPath G_GNUC_UNUSED,
+                                             gpointer userData,
+                                             GVariant **outArgs,
+                                             GUnixFDList **outFDs G_GNUC_UNUSED,
+                                             GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virNodeDevice) dev = NULL;
+    g_autofree gchar *path = NULL;
+    const gchar *wwnn;
+    const gchar *wwpn;
+    guint flags;
+
+    g_variant_get(inArgs, "(&s&su)", &wwnn, &wwpn, &flags);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    dev = virNodeDeviceLookupSCSIHostByWWN(connect->connection, wwnn, wwpn,
+                                           flags);
+    if (!dev)
+        return virtDBusUtilSetLastVirtError(error);
+
+    path = virtDBusUtilBusPathForVirNodeDevice(dev, connect->nodeDevPath);
+
+    *outArgs = g_variant_new("(o)", path);
+}
+
+static void
+virtDBusConnectNWFilterDefineXML(GVariant *inArgs,
+                                 GUnixFDList *inFDs G_GNUC_UNUSED,
+                                 const gchar *objectPath G_GNUC_UNUSED,
+                                 gpointer userData,
+                                 GVariant **outArgs,
+                                 GUnixFDList **outFDs G_GNUC_UNUSED,
+                                 GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virNWFilter) nwfilter = NULL;
+    g_autofree gchar *path = NULL;
+    const gchar *xml;
+
+    g_variant_get(inArgs, "(&s)", &xml);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    nwfilter = virNWFilterDefineXML(connect->connection, xml);
+    if (!nwfilter)
+        return virtDBusUtilSetLastVirtError(error);
+
+    path = virtDBusUtilBusPathForVirNWFilter(nwfilter, connect->nwfilterPath);
+
+    *outArgs = g_variant_new("(o)", path);
+}
+
+static void
+virtDBusConnectNWFilterLookupByName(GVariant *inArgs,
+                                    GUnixFDList *inFDs G_GNUC_UNUSED,
+                                    const gchar *objectPath G_GNUC_UNUSED,
+                                    gpointer userData,
+                                    GVariant **outArgs,
+                                    GUnixFDList **outFDs G_GNUC_UNUSED,
+                                    GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virNWFilter) nwfilter = NULL;
+    g_autofree gchar *path = NULL;
+    const gchar *name;
+
+    g_variant_get(inArgs, "(s)", &name);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    nwfilter = virNWFilterLookupByName(connect->connection, name);
+    if (!nwfilter)
+        return virtDBusUtilSetLastVirtError(error);
+
+    path = virtDBusUtilBusPathForVirNWFilter(nwfilter, connect->nwfilterPath);
+
+    *outArgs = g_variant_new("(o)", path);
+}
+
+static void
+virtDBusConnectNWFilterLookupByUUID(GVariant *inArgs,
+                                    GUnixFDList *inFDs G_GNUC_UNUSED,
+                                    const gchar *objectPath G_GNUC_UNUSED,
+                                    gpointer userData,
+                                    GVariant **outArgs,
+                                    GUnixFDList **outFDs G_GNUC_UNUSED,
+                                    GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virNWFilter) nwfilter = NULL;
+    g_autofree gchar *path = NULL;
+    const gchar *uuidstr;
+
+    g_variant_get(inArgs, "(&s)", &uuidstr);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    nwfilter = virNWFilterLookupByUUIDString(connect->connection, uuidstr);
+    if (!nwfilter)
+        return virtDBusUtilSetLastVirtError(error);
+
+    path = virtDBusUtilBusPathForVirNWFilter(nwfilter, connect->nwfilterPath);
 
     *outArgs = g_variant_new("(o)", path);
 }
@@ -1421,6 +1680,64 @@ virtDBusConnectStoragePoolLookupByUUID(GVariant *inArgs,
     *outArgs = g_variant_new("(o)", path);
 }
 
+static void
+virtDBusConnectStorageVolLookupByKey(GVariant *inArgs,
+                                     GUnixFDList *inFDs G_GNUC_UNUSED,
+                                     const gchar *objectPath G_GNUC_UNUSED,
+                                     gpointer userData,
+                                     GVariant **outArgs,
+                                     GUnixFDList **outFDs G_GNUC_UNUSED,
+                                     GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virStorageVol) storageVol = NULL;
+    g_autofree gchar *path = NULL;
+    const gchar *key;
+
+    g_variant_get(inArgs, "(&s)", &key);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    storageVol = virStorageVolLookupByKey(connect->connection, key);
+    if (!storageVol)
+        return virtDBusUtilSetLastVirtError(error);
+
+    path = virtDBusUtilBusPathForVirStorageVol(storageVol,
+                                               connect->storageVolPath);
+
+    *outArgs = g_variant_new("(o)", path);
+}
+
+static void
+virtDBusConnectStorageVolLookupByPath(GVariant *inArgs,
+                                      GUnixFDList *inFDs G_GNUC_UNUSED,
+                                      const gchar *objectPath G_GNUC_UNUSED,
+                                      gpointer userData,
+                                      GVariant **outArgs,
+                                      GUnixFDList **outFDs G_GNUC_UNUSED,
+                                      GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virStorageVol) storageVol = NULL;
+    const gchar *inPath;
+    g_autofree gchar *path = NULL;
+
+    g_variant_get(inArgs, "(&s)", &inPath);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    storageVol = virStorageVolLookupByPath(connect->connection, inPath);
+    if (!storageVol)
+        return virtDBusUtilSetLastVirtError(error);
+
+    path = virtDBusUtilBusPathForVirStorageVol(storageVol,
+                                               connect->storageVolPath);
+
+    *outArgs = g_variant_new("(o)", path);
+}
+
 static virtDBusGDBusPropertyTable virtDBusConnectPropertyTable[] = {
     { "Encrypted", virtDBusConnectGetEncrypted, NULL },
     { "Hostname", virtDBusConnectGetHostname, NULL },
@@ -1450,12 +1767,20 @@ static virtDBusGDBusMethodTable virtDBusConnectMethodTable[] = {
     { "GetSysinfo", virtDBusConnectGetSysinfo },
     { "ListDomains", virtDBusConnectListDomains },
     { "ListNetworks", virtDBusConnectListNetworks },
+    { "ListNodeDevices", virtDBusConnectListNodeDevices },
+    { "ListNWFilters", virtDBusConnectListNWFilters },
     { "ListSecrets", virtDBusConnectListSecrets },
     { "ListStoragePools", virtDBusConnectListStoragePools },
     { "NetworkCreateXML", virtDBusConnectNetworkCreateXML },
     { "NetworkDefineXML", virtDBusConnectNetworkDefineXML },
     { "NetworkLookupByName", virtDBusConnectNetworkLookupByName },
     { "NetworkLookupByUUID", virtDBusConnectNetworkLookupByUUID },
+    { "NodeDeviceCreateXML", virtDBusConnectNodeDeviceCreateXML },
+    { "NodeDeviceLookupByName", virtDBusConnectNodeDeviceLookupByName },
+    { "NodeDeviceLookupSCSIHostByWWN", virtDBusConnectNodeDeviceLookupSCSIHostByWWN },
+    { "NWFilterDefineXML", virtDBusConnectNWFilterDefineXML },
+    { "NWFilterLookupByName", virtDBusConnectNWFilterLookupByName },
+    { "NWFilterLookupByUUID", virtDBusConnectNWFilterLookupByUUID },
     { "NodeGetCPUMap", virtDBusConnectNodeGetCPUMap },
     { "NodeGetCPUStats", virtDBusConnectNodeGetCPUStats },
     { "NodeGetFreeMemory", virtDBusConnectNodeGetFreeMemory },
@@ -1470,6 +1795,8 @@ static virtDBusGDBusMethodTable virtDBusConnectMethodTable[] = {
     { "StoragePoolDefineXML", virtDBusConnectStoragePoolDefineXML },
     { "StoragePoolLookupByName", virtDBusConnectStoragePoolLookupByName },
     { "StoragePoolLookupByUUID", virtDBusConnectStoragePoolLookupByUUID },
+    { "StorageVolLookupByKey", virtDBusConnectStorageVolLookupByKey },
+    { "StorageVolLookupByPath", virtDBusConnectStorageVolLookupByPath },
     { 0 }
 };
 
@@ -1481,10 +1808,13 @@ virtDBusConnectFree(virtDBusConnect *connect)
     if (connect->connection)
         virtDBusConnectClose(connect, TRUE);
 
+    g_free(connect->nodeDevPath);
     g_free(connect->domainPath);
     g_free(connect->networkPath);
+    g_free(connect->nwfilterPath);
     g_free(connect->secretPath);
     g_free(connect->storagePoolPath);
+    g_free(connect->storageVolPath);
     g_free(connect);
 }
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(virtDBusConnect, virtDBusConnectFree);
@@ -1515,6 +1845,9 @@ virtDBusConnectNew(virtDBusConnect **connectp,
     for (gint i = 0; i < VIR_NETWORK_EVENT_ID_LAST; i++)
         connect->networkCallbackIds[i] = -1;
 
+    for (gint i = 0; i < VIR_NODE_DEVICE_EVENT_ID_LAST; i++)
+        connect->nodeDevCallbackIds[i] = -1;
+
     for (gint i = 0; i < VIR_SECRET_EVENT_ID_LAST; i++)
         connect->secretCallbackIds[i] = -1;
 
@@ -1540,11 +1873,23 @@ virtDBusConnectNew(virtDBusConnect **connectp,
     if (error && *error)
         return;
 
+    virtDBusNodeDeviceRegister(connect, error);
+    if (error && *error)
+        return;
+
+    virtDBusNWFilterRegister(connect, error);
+    if (error && *error)
+        return;
+
     virtDBusSecretRegister(connect, error);
     if (error && *error)
         return;
 
     virtDBusStoragePoolRegister(connect, error);
+    if (error && *error)
+        return;
+
+    virtDBusStorageVolRegister(connect, error);
     if (error && *error)
         return;
 

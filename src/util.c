@@ -181,6 +181,70 @@ virtDBusUtilDecodeUUID(const gchar *uuid)
     return g_strdelimit(ret, "_", '-');
 }
 
+static guchar
+virtDBusUtilNumToHexchar(const guchar c)
+{
+    if (c < 10)
+        return '0' + c;
+    return 'a' + (c & 0x0f) - 10;
+}
+
+static guchar
+virtDBusUtilHexcharToNum(const guchar c)
+{
+    if (c >= 'a')
+        return 10 + c - 'a';
+    return c - '0';
+}
+
+gchar *
+virtDBusUtilEncodeStr(const gchar *str)
+{
+    gint len = strlen(str);
+    gint j = 0;
+    gchar *ret = g_new(gchar, len * 3 + 1);
+
+    for (gint i = 0; i < len; i++) {
+        guchar c = str[i];
+        if ((c >= 'A' && c <= 'Z') ||
+            (c >= 'a' && c <= 'z') ||
+            (c >= '0' && c <= '9')) {
+            ret[j++] = c;
+        } else {
+            ret[j] = '_';
+            ret[j + 1] = virtDBusUtilNumToHexchar(c >> 4);
+            ret[j + 2] = virtDBusUtilNumToHexchar(c);
+            j += 3;
+        }
+    }
+    ret[j] = 0;
+
+    return ret;
+}
+
+gchar *
+virtDBusUtilDecodeStr(const gchar *str)
+{
+    gint len = strlen(str);
+    gint j = 0;
+    gchar *ret = g_new(gchar, len + 1);
+
+    for (gint i = 0; i < len; i++) {
+        gchar c = str[i];
+        if (c != '_' || (i + 2) >= len) {
+            ret[j++] = c;
+        } else {
+            guchar a = virtDBusUtilHexcharToNum(str[i + 1]);
+            guchar b = virtDBusUtilHexcharToNum(str[i + 2]);
+            ret[j++] = (a << 4) + b;
+            i += 2;
+        }
+    }
+    ret[j] = 0;
+
+    return ret;
+}
+
 gchar *
 virtDBusUtilBusPathForVirDomain(virDomainPtr domain,
                                 const gchar *domainPath)
@@ -247,6 +311,73 @@ virtDBusUtilVirNetworkListFree(virNetworkPtr *networks)
     g_free(networks);
 }
 
+virNodeDevicePtr
+virtDBusUtilVirNodeDeviceFromBusPath(virConnectPtr connection,
+                                     const gchar *path,
+                                     const gchar *nodeDevPath)
+{
+    g_autofree gchar *name = NULL;
+    gsize prefixLen = strlen(nodeDevPath) + 1;
+
+    name = virtDBusUtilDecodeStr(path + prefixLen);
+
+    return virNodeDeviceLookupByName(connection, name);
+}
+
+gchar *
+virtDBusUtilBusPathForVirNodeDevice(virNodeDevicePtr dev,
+                                    const gchar *nodeDevPath)
+{
+    const gchar *name = NULL;
+    g_autofree const gchar *encodedName = NULL;
+
+    name = virNodeDeviceGetName(dev);
+    encodedName = virtDBusUtilEncodeStr(name);
+
+    return g_strdup_printf("%s/%s", nodeDevPath, encodedName);
+}
+
+void
+virtDBusUtilVirNodeDeviceListFree(virNodeDevicePtr *devs)
+{
+    for (gint i = 0; devs[i] != NULL; i++)
+        virNodeDeviceFree(devs[i]);
+
+    g_free(devs);
+}
+
+virNWFilterPtr
+virtDBusUtilVirNWFilterFromBusPath(virConnectPtr connection,
+                                   const gchar *path,
+                                   const gchar *nwfilterPath)
+{
+    g_autofree gchar *name = NULL;
+    gsize prefixLen = strlen(nwfilterPath) + 1;
+
+    name = virtDBusUtilDecodeUUID(path + prefixLen);
+
+    return virNWFilterLookupByUUIDString(connection, name);
+}
+
+gchar *
+virtDBusUtilBusPathForVirNWFilter(virNWFilterPtr nwfilter,
+                                  const gchar *nwfilterPath)
+{
+    gchar uuid[VIR_UUID_STRING_BUFLEN] = "";
+    g_autofree gchar *newUuid = NULL;
+    virNWFilterGetUUIDString(nwfilter, uuid);
+    newUuid = virtDBusUtilEncodeUUID(uuid);
+    return g_strdup_printf("%s/%s", nwfilterPath, newUuid);
+}
+
+void
+virtDBusUtilVirNWFilterListFree(virNWFilterPtr *nwfilters)
+{
+    for (gint i = 0; nwfilters[i] != NULL; i++)
+        virNWFilterFree(nwfilters[i]);
+
+    g_free(nwfilters);
+}
 void
 virtDBusUtilStringListFree(virtDBusCharArray *item)
 {
@@ -320,4 +451,39 @@ virtDBusUtilVirStoragePoolListFree(virStoragePoolPtr *storagePools)
         virStoragePoolFree(storagePools[i]);
 
     g_free(storagePools);
+}
+
+virStorageVolPtr
+virtDBusUtilVirStorageVolFromBusPath(virConnectPtr connection,
+                                     const gchar *path,
+                                     const gchar *storageVolPath)
+{
+    g_autofree gchar *key = NULL;
+    gsize prefixLen = strlen(storageVolPath) + 1;
+
+    key = virtDBusUtilDecodeStr(path + prefixLen);
+
+    return virStorageVolLookupByKey(connection, key);
+}
+
+gchar *
+virtDBusUtilBusPathForVirStorageVol(virStorageVolPtr storageVol,
+                                    const gchar *storageVolPath)
+{
+    const gchar *key = NULL;
+    g_autofree const gchar *encodedKey = NULL;
+
+    key = virStorageVolGetKey(storageVol);
+    encodedKey = virtDBusUtilEncodeStr(key);
+
+    return g_strdup_printf("%s/%s", storageVolPath, encodedKey);
+}
+
+void
+virtDBusUtilVirStorageVolListFree(virStorageVolPtr *storageVols)
+{
+    for (gint i = 0; storageVols[i] != NULL; i++)
+        virStorageVolFree(storageVols[i]);
+
+    g_free(storageVols);
 }

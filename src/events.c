@@ -546,10 +546,10 @@ virtDBusEventsDomainDiskChange(virConnectPtr connection G_GNUC_UNUSED,
 
 static gint
 virtDBusEventsNetworkEvent(virConnectPtr connection G_GNUC_UNUSED,
-                               virNetworkPtr network,
-                               gint event,
-                               gint detail G_GNUC_UNUSED,
-                               gpointer opaque)
+                           virNetworkPtr network,
+                           gint event,
+                           gint detail G_GNUC_UNUSED,
+                           gpointer opaque)
 {
     virtDBusConnect *connect = opaque;
     g_autofree gchar *path = NULL;
@@ -568,11 +568,34 @@ virtDBusEventsNetworkEvent(virConnectPtr connection G_GNUC_UNUSED,
 }
 
 static gint
-virtDBusEventsSecretEvent(virConnectPtr connection G_GNUC_UNUSED,
-                              virSecretPtr secret,
+virtDBusEventsNodeDeviceEvent(virConnectPtr connection G_GNUC_UNUSED,
+                              virNodeDevicePtr dev,
                               gint event,
                               gint detail,
                               gpointer opaque)
+{
+    virtDBusConnect *connect = opaque;
+    g_autofree gchar *path = NULL;
+
+    path = virtDBusUtilBusPathForVirNodeDevice(dev, connect->nodeDevPath);
+
+    g_dbus_connection_emit_signal(connect->bus,
+                                  NULL,
+                                  connect->connectPath,
+                                  VIRT_DBUS_CONNECT_INTERFACE,
+                                  "NodeDeviceEvent",
+                                  g_variant_new("(oii)", path, event, detail),
+                                  NULL);
+
+    return 0;
+}
+
+static gint
+virtDBusEventsSecretEvent(virConnectPtr connection G_GNUC_UNUSED,
+                          virSecretPtr secret,
+                          gint event,
+                          gint detail,
+                          gpointer opaque)
 {
     virtDBusConnect *connect = opaque;
     g_autofree gchar *path = NULL;
@@ -592,10 +615,10 @@ virtDBusEventsSecretEvent(virConnectPtr connection G_GNUC_UNUSED,
 
 static gint
 virtDBusEventsStoragePoolEvent(virConnectPtr connection G_GNUC_UNUSED,
-                                   virStoragePoolPtr storagePool,
-                                   gint event,
-                                   gint detail,
-                                   gpointer opaque)
+                               virStoragePoolPtr storagePool,
+                               gint event,
+                               gint detail,
+                               gpointer opaque)
 {
     virtDBusConnect *connect = opaque;
     g_autofree gchar *path = NULL;
@@ -664,6 +687,21 @@ virtDBusEventsRegisterNetworkEvent(virtDBusConnect *connect,
                                                                         VIR_NETWORK_EVENT_CALLBACK(callback),
                                                                         connect,
                                                                         NULL);
+}
+
+static void
+virtDBusEventsRegisterNodeDeviceEvent(virtDBusConnect *connect,
+                                      gint id,
+                                      virConnectNodeDeviceEventGenericCallback callback)
+{
+    g_assert(connect->nodeDevCallbackIds[id] == -1);
+
+    connect->nodeDevCallbackIds[id] = virConnectNodeDeviceEventRegisterAny(connect->connection,
+                                                                           NULL,
+                                                                           id,
+                                                                           VIR_NODE_DEVICE_EVENT_CALLBACK(callback),
+                                                                           connect,
+                                                                           NULL);
 }
 
 static void
@@ -790,6 +828,10 @@ virtDBusEventsRegister(virtDBusConnect *connect)
     virtDBusEventsRegisterNetworkEvent(connect,
                                        VIR_NETWORK_EVENT_ID_LIFECYCLE,
                                        VIR_NETWORK_EVENT_CALLBACK(virtDBusEventsNetworkEvent));
+
+    virtDBusEventsRegisterNodeDeviceEvent(connect,
+                                          VIR_NODE_DEVICE_EVENT_ID_LIFECYCLE,
+                                          VIR_NODE_DEVICE_EVENT_CALLBACK(virtDBusEventsNodeDeviceEvent));
 
     virtDBusEventsRegisterSecretEvent(connect,
                                       VIR_SECRET_EVENT_ID_LIFECYCLE,

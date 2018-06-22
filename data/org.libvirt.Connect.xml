@@ -160,6 +160,18 @@
       <arg name="flags" type="u" direction="in"/>
       <arg name="networks" type="ao" direction="out"/>
     </method>
+    <method name="ListNodeDevices">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virConnectListAllNodeDevices"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="devs" type="ao" direction="out"/>
+    </method>
+    <method name="ListNWFilters">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nwfilter.html#virConnectListAllNWFilters"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="nwfilters" type="ao" direction="out"/>
+    </method>
     <method name="ListSecrets">
       <annotation name="org.gtk.GDBus.DocString"
         value="See https://libvirt.org/html/libvirt-libvirt-secret.html#virConnectListAllSecrets"/>
@@ -195,6 +207,45 @@
         value="See https://libvirt.org/html/libvirt-libvirt-network.html#virNetworkLookupByUUIDString"/>
       <arg name="uuid" type="s" direction="in"/>
       <arg name="network" type="o" direction="out"/>
+    </method>
+    <method name="NodeDeviceCreateXML">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virNodeDeviceCreateXML"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="dev" type="o" direction="out"/>
+    </method>
+    <method name="NodeDeviceLookupByName">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virNodeDeviceLookupByName"/>
+      <arg name="name" type="s" direction="in"/>
+      <arg name="dev" type="o" direction="out"/>
+    </method>
+    <method name="NodeDeviceLookupSCSIHostByWWN">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virNodeDeviceLookupSCSIHostByWWN"/>
+      <arg name="wwnn" type="s" direction="in"/>
+      <arg name="wwpn" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="dev" type="o" direction="out"/>
+    </method>
+    <method name="NWFilterDefineXML">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nwfilter.html#virNWFilterDefineXML"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="nwfilter" type="o" direction="out"/>
+    </method>
+    <method name="NWFilterLookupByName">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nwfilter.html#virNWFilterLookupByName"/>
+      <arg name="name" type="s" direction="in"/>
+      <arg name="nwfilter" type="o" direction="out"/>
+    </method>
+    <method name="NWFilterLookupByUUID">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nwfilter.html#virNWFilterLookupByUUIDString"/>
+      <arg name="uuid" type="s" direction="in"/>
+      <arg name="nwfilter" type="o" direction="out"/>
     </method>
     <method name="NodeGetCPUMap">
       <annotation name="org.gtk.GDBus.DocString"
@@ -284,6 +335,18 @@
       <arg name="uuid" type="s" direction="in"/>
       <arg name="storagePool" type="o" direction="out"/>
     </method>
+    <method name="StorageVolLookupByKey">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStorageVolLookupByKey"/>
+      <arg name="key" type="s" direction="in"/>
+      <arg name="storageVol" type="o" direction="out"/>
+    </method>
+    <method name="StorageVolLookupByPath">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-storage.html#virStorageVolLookupByPath"/>
+      <arg name="path" type="s" direction="in"/>
+      <arg name="storageVol" type="o" direction="out"/>
+    </method>
     <signal name="DomainEvent">
       <annotation name="org.gtk.GDBus.DocString"
         value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectDomainEventCallback"/>
@@ -296,6 +359,13 @@
         value="See https://libvirt.org/html/libvirt-libvirt-network.html#virConnectNetworkEventLifecycleCallback"/>
       <arg name="network" type="o"/>
       <arg name="event" type="i"/>
+    </signal>
+    <signal name="NodeDeviceEvent">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-nodedev.html#virConnectNodeDeviceEventLifecycleCallback"/>
+      <arg name="dev" type="o"/>
+      <arg name="event" type="i"/>
+      <arg name="detail" type="i"/>
     </signal>
     <signal name="SecretEvent">
       <annotation name="org.gtk.GDBus.DocString"

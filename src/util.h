@@ -43,6 +43,12 @@ void
 virtDBusUtilSetLastVirtError(GError **error);
 
 gchar *
+virtDBusUtilEncodeStr(const gchar *str);
+
+gchar *
+virtDBusUtilDecodeStr(const gchar *str);
+
+gchar *
 virtDBusUtilBusPathForVirDomain(virDomainPtr domain,
                                 const gchar *domainPath);
 
@@ -61,8 +67,8 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(virDomainStatsRecordPtr, virDomainStatsRecordListF
 
 virNetworkPtr
 virtDBusUtilVirNetworkFromBusPath(virConnectPtr connection,
-                                 const gchar *path,
-                                 const gchar *networkPath);
+                                  const gchar *path,
+                                  const gchar *networkPath);
 
 gchar *
 virtDBusUtilBusPathForVirNetwork(virNetworkPtr network,
@@ -73,6 +79,36 @@ virtDBusUtilVirNetworkListFree(virNetworkPtr *networks);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(virNetwork, virNetworkFree);
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(virNetworkPtr, virtDBusUtilVirNetworkListFree);
+
+virNodeDevicePtr
+virtDBusUtilVirNodeDeviceFromBusPath(virConnectPtr connection,
+                                     const gchar *path,
+                                     const gchar *nodeDevPath);
+
+gchar *
+virtDBusUtilBusPathForVirNodeDevice(virNodeDevicePtr NodeDevice,
+                                    const gchar *nodeDevPath);
+
+void
+virtDBusUtilVirNodeDeviceListFree(virNodeDevicePtr *devs);
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(virNodeDevice, virNodeDeviceFree);
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(virNodeDevicePtr, virtDBusUtilVirNodeDeviceListFree);
+
+virNWFilterPtr
+virtDBusUtilVirNWFilterFromBusPath(virConnectPtr connection,
+                                   const gchar *path,
+                                   const gchar *nwfilterPath);
+
+gchar *
+virtDBusUtilBusPathForVirNWFilter(virNWFilterPtr nwfilter,
+                                  const gchar *nwfilterPath);
+
+void
+virtDBusUtilVirNWFilterListFree(virNWFilterPtr *nwfilters);
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(virNWFilter, virNWFilterFree);
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(virNWFilterPtr, virtDBusUtilVirNWFilterListFree);
 
 typedef gchar *virtDBusCharArray;
 
@@ -112,3 +148,19 @@ virtDBusUtilVirStoragePoolListFree(virStoragePoolPtr *storagePools);
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(virStoragePool, virStoragePoolFree);
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(virStoragePoolPtr,
                               virtDBusUtilVirStoragePoolListFree);
+
+virStorageVolPtr
+virtDBusUtilVirStorageVolFromBusPath(virConnectPtr connection,
+                                     const gchar *path,
+                                     const gchar *storageVolPath);
+
+gchar *
+virtDBusUtilBusPathForVirStorageVol(virStorageVolPtr storageVol,
+                                    const gchar *storageVolPath);
+
+void
+virtDBusUtilVirStorageVolListFree(virStorageVolPtr *storageVols);
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(virStorageVol, virStorageVolFree);
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(virStorageVolPtr,
+                              virtDBusUtilVirStorageVolListFree);

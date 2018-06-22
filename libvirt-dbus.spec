@@ -6,7 +6,7 @@
 %global system_user libvirtdbus
 
 Name: libvirt-dbus
-Version: 1.0.0
+Version: 1.1.0
 Release: 1%{?dist}
 Summary: libvirt D-Bus API binding
 License: LGPLv2+

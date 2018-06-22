@@ -7,9 +7,10 @@ import pytest
 import subprocess
 import sys
 import time
+import xmldata
 
 
-root = os.environ.get('abs_top_builddir', os.path.dirname(os.path.dirname(__file__)))
+root = os.environ.get('abs_top_builddir')
 exe = os.path.join(root, 'src', 'libvirt-dbus')
 
 DBusGMainLoop(set_as_default=True)
@@ -70,12 +71,36 @@ class BaseTestClass():
         if self.timeout:
             raise TimeoutError()
 
-    def domain(self):
+    @pytest.fixture
+    def node_device_create(self):
+        """ Fixture to create dummy node device on the test driver
+
+        This fixture should be used in the setup of every test manipulating
+        with node devices.
+        """
+        path = self.connect.NodeDeviceCreateXML(xmldata.minimal_node_device_xml, 0)
+        return path
+
+    @pytest.fixture
+    def storage_volume_create(self):
+        """ Fixture to create dummy storage volume on the test driver
+
+        This fixture should be used in the setup of every test manipulating
+        with test volume.
+        """
+        _, test_storage_pool = self.get_test_storage_pool()
+        interface_obj = dbus.Interface(test_storage_pool,
+                                       'org.libvirt.StoragePool')
+        path = interface_obj.StorageVolCreateXML(xmldata.minimal_storage_vol_xml, 0)
+        yield path
+
+
+    def get_test_domain(self):
         path = self.connect.ListDomains(0)[0]
         obj = self.bus.get_object('org.libvirt', path)
         return obj, dbus.Interface(obj, 'org.libvirt.Domain')
 
-    def test_network(self):
+    def get_test_network(self):
         """Fetch information for the test network from test driver
 
         Returns:
@@ -87,7 +112,7 @@ class BaseTestClass():
         obj = self.bus.get_object('org.libvirt', path)
         return path, obj
 
-    def test_storage_pool(self):
+    def get_test_storage_pool(self):
         """Fetch information for the test storage pool from test driver
 
         Returns:
@@ -97,6 +122,22 @@ class BaseTestClass():
 
         """
         path = self.connect.ListStoragePools(0)[0]
+        obj = self.bus.get_object('org.libvirt', path)
+        return path, obj
+
+    def get_test_storage_volume(self):
+        """Fetch information for the test storage vol from test driver
+
+        Returns:
+            (dbus.proxies.ProxyObject, dbus.proxies.ProxyObject):
+            Test StorageVol Object, Local proxy for the test StorageVol
+            Object.
+
+        """
+        _, test_storage_pool = self.get_test_storage_pool()
+        pool_iface = dbus.Interface(test_storage_pool,
+                                    'org.libvirt.StoragePool')
+        path = pool_iface.ListStorageVolumes(0)[0]
         obj = self.bus.get_object('org.libvirt', path)
         return path, obj
 
@@ -186,6 +227,9 @@ class NetworkEvent(IntEnum):
     STARTED = 2
     STOPPED = 3
 
+class NodeDeviceEvent(IntEnum):
+    CREATED = 0
+    DELETED = 1
 
 class StoragePoolBuildFlags(IntEnum):
     NEW = 0

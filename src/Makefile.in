@@ -110,8 +110,10 @@ am__objects_1 = libvirt_dbus-main.$(OBJEXT) \
 	libvirt_dbus-connect.$(OBJEXT) libvirt_dbus-util.$(OBJEXT) \
 	libvirt_dbus-domain.$(OBJEXT) libvirt_dbus-events.$(OBJEXT) \
 	libvirt_dbus-gdbus.$(OBJEXT) libvirt_dbus-network.$(OBJEXT) \
+	libvirt_dbus-nodedev.$(OBJEXT) libvirt_dbus-nwfilter.$(OBJEXT) \
 	libvirt_dbus-secret.$(OBJEXT) \
-	libvirt_dbus-storagepool.$(OBJEXT)
+	libvirt_dbus-storagepool.$(OBJEXT) \
+	libvirt_dbus-storagevol.$(OBJEXT)
 am_libvirt_dbus_OBJECTS = $(am__objects_1)
 libvirt_dbus_OBJECTS = $(am_libvirt_dbus_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -319,8 +321,12 @@ DAEMON_SOURCES = \
 	events.c events.h \
 	gdbus.c gdbus.h \
 	network.c network.h \
+	nodedev.c nodedev.h \
+	nwfilter.c nwfilter.h \
 	secret.c secret.h \
-	storagepool.c storagepool.h
+	storagepool.c storagepool.h \
+	storagevol.c storagevol.h \
+	$(NULL)
 
 EXTRA_DIST = \
 	$(DAEMON_SOURCES)
@@ -443,8 +449,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-gdbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-network.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-nodedev.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-nwfilter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-secret.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-storagepool.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-storagevol.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-util.Po@am__quote@
 
 .c.o:
@@ -559,6 +568,34 @@ libvirt_dbus-network.obj: network.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-network.obj `if test -f 'network.c'; then $(CYGPATH_W) 'network.c'; else $(CYGPATH_W) '$(srcdir)/network.c'; fi`
 
+libvirt_dbus-nodedev.o: nodedev.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-nodedev.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-nodedev.Tpo -c -o libvirt_dbus-nodedev.o `test -f 'nodedev.c' || echo '$(srcdir)/'`nodedev.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-nodedev.Tpo $(DEPDIR)/libvirt_dbus-nodedev.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nodedev.c' object='libvirt_dbus-nodedev.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-nodedev.o `test -f 'nodedev.c' || echo '$(srcdir)/'`nodedev.c
+
+libvirt_dbus-nodedev.obj: nodedev.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-nodedev.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-nodedev.Tpo -c -o libvirt_dbus-nodedev.obj `if test -f 'nodedev.c'; then $(CYGPATH_W) 'nodedev.c'; else $(CYGPATH_W) '$(srcdir)/nodedev.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-nodedev.Tpo $(DEPDIR)/libvirt_dbus-nodedev.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nodedev.c' object='libvirt_dbus-nodedev.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-nodedev.obj `if test -f 'nodedev.c'; then $(CYGPATH_W) 'nodedev.c'; else $(CYGPATH_W) '$(srcdir)/nodedev.c'; fi`
+
+libvirt_dbus-nwfilter.o: nwfilter.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-nwfilter.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-nwfilter.Tpo -c -o libvirt_dbus-nwfilter.o `test -f 'nwfilter.c' || echo '$(srcdir)/'`nwfilter.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-nwfilter.Tpo $(DEPDIR)/libvirt_dbus-nwfilter.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nwfilter.c' object='libvirt_dbus-nwfilter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-nwfilter.o `test -f 'nwfilter.c' || echo '$(srcdir)/'`nwfilter.c
+
+libvirt_dbus-nwfilter.obj: nwfilter.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-nwfilter.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-nwfilter.Tpo -c -o libvirt_dbus-nwfilter.obj `if test -f 'nwfilter.c'; then $(CYGPATH_W) 'nwfilter.c'; else $(CYGPATH_W) '$(srcdir)/nwfilter.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-nwfilter.Tpo $(DEPDIR)/libvirt_dbus-nwfilter.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nwfilter.c' object='libvirt_dbus-nwfilter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-nwfilter.obj `if test -f 'nwfilter.c'; then $(CYGPATH_W) 'nwfilter.c'; else $(CYGPATH_W) '$(srcdir)/nwfilter.c'; fi`
+
 libvirt_dbus-secret.o: secret.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-secret.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-secret.Tpo -c -o libvirt_dbus-secret.o `test -f 'secret.c' || echo '$(srcdir)/'`secret.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-secret.Tpo $(DEPDIR)/libvirt_dbus-secret.Po
@@ -586,6 +623,20 @@ libvirt_dbus-storagepool.obj: storagepool.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='storagepool.c' object='libvirt_dbus-storagepool.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-storagepool.obj `if test -f 'storagepool.c'; then $(CYGPATH_W) 'storagepool.c'; else $(CYGPATH_W) '$(srcdir)/storagepool.c'; fi`
+
+libvirt_dbus-storagevol.o: storagevol.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-storagevol.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-storagevol.Tpo -c -o libvirt_dbus-storagevol.o `test -f 'storagevol.c' || echo '$(srcdir)/'`storagevol.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-storagevol.Tpo $(DEPDIR)/libvirt_dbus-storagevol.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='storagevol.c' object='libvirt_dbus-storagevol.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-storagevol.o `test -f 'storagevol.c' || echo '$(srcdir)/'`storagevol.c
+
+libvirt_dbus-storagevol.obj: storagevol.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-storagevol.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-storagevol.Tpo -c -o libvirt_dbus-storagevol.obj `if test -f 'storagevol.c'; then $(CYGPATH_W) 'storagevol.c'; else $(CYGPATH_W) '$(srcdir)/storagevol.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-storagevol.Tpo $(DEPDIR)/libvirt_dbus-storagevol.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='storagevol.c' object='libvirt_dbus-storagevol.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-storagevol.obj `if test -f 'storagevol.c'; then $(CYGPATH_W) 'storagevol.c'; else $(CYGPATH_W) '$(srcdir)/storagevol.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

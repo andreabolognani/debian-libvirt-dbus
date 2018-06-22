@@ -10,8 +10,12 @@ DAEMON_SOURCES = \
 	events.c events.h \
 	gdbus.c gdbus.h \
 	network.c network.h \
+	nodedev.c nodedev.h \
+	nwfilter.c nwfilter.h \
 	secret.c secret.h \
-	storagepool.c storagepool.h
+	storagepool.c storagepool.h \
+	storagevol.c storagevol.h \
+	$(NULL)
 
 EXTRA_DIST = \
 	$(DAEMON_SOURCES)
