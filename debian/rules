@@ -3,6 +3,13 @@
 %:
 	dh $@
 
+# Install files.
+#
+# We use debian/tmp as a staging area so that we can have full control
+# over what exactly ends up in the package.
+override_dh_auto_install:
+	dh_auto_install --destdir=debian/tmp
+
 # Install changelogs.
 #
 # Upstream releases don't include a ChangeLog file, but the NEWS file
