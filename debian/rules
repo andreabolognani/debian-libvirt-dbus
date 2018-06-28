@@ -2,3 +2,10 @@
 
 %:
 	dh $@
+
+# Install changelogs.
+#
+# Upstream releases don't include a ChangeLog file, but the NEWS file
+# contains all information users might be interested in.
+override_dh_installchangelogs:
+	dh_installchangelogs NEWS
