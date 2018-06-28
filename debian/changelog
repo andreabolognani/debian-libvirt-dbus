@@ -1,0 +1,5 @@
+libvirt-dbus (1.2.0-1) unstable; urgency=medium
+
+  * Initial release. (Closes: #901733)
+
+ -- Andrea Bolognani <eof@kiyuko.org>  Thu, 05 Jul 2018 17:13:30 +0200
