@@ -18,6 +18,12 @@ override_dh_auto_configure:
 # over what exactly ends up in the package.
 override_dh_auto_install:
 	dh_auto_install --destdir=debian/tmp
+	# polkit 105 compatibility
+	install -m 0755 -d \
+	        debian/tmp/var/lib/polkit-1/localauthority/10-vendor.d/
+	install -m 0644 \
+	        debian/polkit/libvirt-dbus.pkla \
+	        debian/tmp/var/lib/polkit-1/localauthority/10-vendor.d/
 
 # Install changelogs.
 #
