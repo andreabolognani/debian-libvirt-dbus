@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# Prepare
+
+echo "# Preparing"
+eval $(dbus-launch --sh-syntax)
+echo 'ao 1 "/org/libvirt/Test/domain/_6695eb01_f6a4_8304_79aa_97f2502e193f"' >expected.log
+
+# Run
+
+echo "# Listing domains"
+busctl \
+     --user call \
+     org.libvirt /org/libvirt/Test \
+     org.libvirt.Connect ListDomains u 0 \
+     >actual.log 2>&1
+
+# Check
+
+echo "# Checking"
+diff -Naru expected.log actual.log
+
+exit $?
