@@ -89,8 +89,10 @@ build_triplet = @build@
 host_triplet = @host@
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/manywarnings.m4 \
-	$(top_srcdir)/m4/virt-arg.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/manywarnings.m4 $(top_srcdir)/m4/virt-arg.m4 \
 	$(top_srcdir)/m4/virt-compile-pie.m4 \
 	$(top_srcdir)/m4/virt-compile-warnings.m4 \
 	$(top_srcdir)/m4/virt-linker-relro.m4 \
@@ -168,9 +170,10 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/build-aux/config.guess \
 	$(top_srcdir)/build-aux/config.sub \
 	$(top_srcdir)/build-aux/install-sh \
+	$(top_srcdir)/build-aux/ltmain.sh \
 	$(top_srcdir)/build-aux/missing COPYING NEWS build-aux/compile \
 	build-aux/config.guess build-aux/config.sub \
-	build-aux/install-sh build-aux/missing
+	build-aux/install-sh build-aux/ltmain.sh build-aux/missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -206,9 +209,9 @@ am__relativize = \
     dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
   done; \
   reldir="$$dir2"
-DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
-DIST_TARGETS = dist-gzip
+DIST_ARCHIVES = $(distdir).tar.xz
+DIST_TARGETS = dist-xz
 distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
@@ -216,6 +219,7 @@ distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -232,11 +236,15 @@ DBUS_SYSTEM_POLICIES_DIR = @DBUS_SYSTEM_POLICIES_DIR@
 DBUS_SYSTEM_SERVICES_DIR = @DBUS_SYSTEM_SERVICES_DIR@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
+DSYMUTIL = @DSYMUTIL@
+DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FGREP = @FGREP@
 GIO2_CFLAGS = @GIO2_CFLAGS@
 GIO2_LIBS = @GIO2_LIBS@
 GLIB2_CFLAGS = @GLIB2_CFLAGS@
@@ -248,9 +256,11 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
+LIBTOOL = @LIBTOOL@
 LIBVIRT_CFLAGS = @LIBVIRT_CFLAGS@
 LIBVIRT_DBUS_MAJOR_VERSION = @LIBVIRT_DBUS_MAJOR_VERSION@
 LIBVIRT_DBUS_MICRO_VERSION = @LIBVIRT_DBUS_MICRO_VERSION@
@@ -263,10 +273,19 @@ LIBVIRT_GLIB_LIBS = @LIBVIRT_GLIB_LIBS@
 LIBVIRT_GLIB_REQUIRED = @LIBVIRT_GLIB_REQUIRED@
 LIBVIRT_LIBS = @LIBVIRT_LIBS@
 LIBVIRT_REQUIRED = @LIBVIRT_REQUIRED@
+LIPO = @LIPO@
+LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+NM = @NM@
+NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OTOOL = @OTOOL@
+OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -280,8 +299,11 @@ PIE_LDFLAGS = @PIE_LDFLAGS@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+POLKIT_RULES_DIR = @POLKIT_RULES_DIR@
+RANLIB = @RANLIB@
 RELAXED_FRAME_LIMIT_CFLAGS = @RELAXED_FRAME_LIMIT_CFLAGS@
 RELRO_LDFLAGS = @RELRO_LDFLAGS@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRICT_FRAME_LIMIT_CFLAGS = @STRICT_FRAME_LIMIT_CFLAGS@
@@ -293,7 +315,9 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -339,7 +363,13 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = data docs src tests
+SUBDIRS = \
+	data \
+	docs \
+	src \
+	tests \
+	$(NULL)
+
 ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = \
 	$(PACKAGE).spec \
@@ -349,7 +379,10 @@ EXTRA_DIST = \
 	README.md \
 	$(NULL)
 
-DISTCLEAN_FILES = $(PACKAGE).spec
+DISTCLEAN_FILES = \
+	$(PACKAGE).spec \
+	$(NULL)
+
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -406,6 +439,15 @@ run: $(top_builddir)/config.status $(srcdir)/run.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 libvirt-dbus.spec: $(top_builddir)/config.status $(srcdir)/libvirt-dbus.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+	-rm -f libtool config.lt
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run 'make' without going through this Makefile.
@@ -591,7 +633,6 @@ dist-bzip2: distdir
 dist-lzip: distdir
 	tardir=$(distdir) && $(am__tar) | lzip -c $${LZIP_OPT--9} >$(distdir).tar.lz
 	$(am__post_remove_distdir)
-
 dist-xz: distdir
 	tardir=$(distdir) && $(am__tar) | XZ_OPT=$${XZ_OPT--e} xz -c >$(distdir).tar.xz
 	$(am__post_remove_distdir)
@@ -741,12 +782,13 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-generic mostlyclean-am
+clean-am: clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -f Makefile
-distclean-am: clean-am distclean-generic distclean-hdr distclean-tags
+distclean-am: clean-am distclean-generic distclean-hdr \
+	distclean-libtool distclean-tags
 
 dvi: dvi-recursive
 
@@ -796,7 +838,7 @@ maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-recursive
 
-mostlyclean-am: mostlyclean-generic
+mostlyclean-am: mostlyclean-generic mostlyclean-libtool
 
 pdf: pdf-recursive
 
@@ -812,9 +854,10 @@ uninstall-am:
 
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am \
 	am--refresh check check-am clean clean-cscope clean-generic \
-	cscope cscopelist-am ctags ctags-am dist dist-all dist-bzip2 \
-	dist-gzip dist-hook dist-lzip dist-shar dist-tarZ dist-xz \
-	dist-zip distcheck distclean distclean-generic distclean-hdr \
+	clean-libtool cscope cscopelist-am ctags ctags-am dist \
+	dist-all dist-bzip2 dist-gzip dist-hook dist-lzip dist-shar \
+	dist-tarZ dist-xz dist-zip distcheck distclean \
+	distclean-generic distclean-hdr distclean-libtool \
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-dvi install-dvi-am \
@@ -823,14 +866,14 @@ uninstall-am:
 	install-pdf-am install-ps install-ps-am install-strip \
 	installcheck installcheck-am installdirs installdirs-am \
 	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags tags-am uninstall uninstall-am
 
 .PRECIOUS: Makefile
 
 
 rpm: clean
-	@(unset CDPATH ; $(MAKE) dist && rpmbuild -ta $(distdir).tar.gz)
+	@(unset CDPATH ; $(MAKE) dist && rpmbuild -ta $(distdir).tar.xz)
 
 dist-hook: gen-AUTHORS
 
@@ -838,11 +881,19 @@ dist-hook: gen-AUTHORS
 # and insert it into the directory we're about to use to create a tarball.
 .PHONY: gen-AUTHORS
 gen-AUTHORS:
-	$(AM_V_GEN)if test -d $(srcdir)/.git; then                      \
-	  out="`cd $(srcdir) && git log --pretty=format:'%aN <%aE>' | sort -u`" && \
-	  perl -p -e "s/#authorslist#// and print '$$out'"            \
-	    < $(srcdir)/AUTHORS.in > $(distdir)/AUTHORS-tmp &&        \
-	  mv -f $(distdir)/AUTHORS-tmp $(distdir)/AUTHORS ;           \
+	$(AM_V_GEN)\
+	if test -d $(srcdir)/.git; then \
+	  ( \
+	    cd $(srcdir) && \
+	    git log --pretty=format:'    %aN <%aE>' | sort -u \
+	  ) > all.list && \
+	  sort -u $(srcdir)/AUTHORS.in > maint.list && \
+	  comm -23 all.list maint.list > contrib.list && \
+	  contrib="`cat contrib.list`" && \
+	  perl -p -e "s/#contributorslist#// and print '$$contrib'" \
+	    < $(srcdir)/AUTHORS.in > $(distdir)/AUTHORS-tmp && \
+	  mv -f $(distdir)/AUTHORS-tmp $(distdir)/AUTHORS && \
+	  rm -f all.list maint.list contrib.list; \
 	fi
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

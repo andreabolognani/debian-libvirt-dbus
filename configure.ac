@@ -1,11 +1,11 @@
-AC_INIT([libvirt-dbus], [1.1.0], [libvir-list@redhat.com], [], [http://libvirt.org])
+AC_INIT([libvirt-dbus], [1.2.0], [libvir-list@redhat.com], [], [https://libvirt.org])
 
 AC_CONFIG_SRCDIR(src/main.c)
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 dnl Make automake keep quiet about wildcards & other GNUmake-isms
-AM_INIT_AUTOMAKE([foreign -Wno-portability])
+AM_INIT_AUTOMAKE([foreign -Wno-portability -Wno-obsolete subdir-objects tar-pax no-dist-gzip dist-xz])
 AC_CANONICAL_HOST
 AC_USE_SYSTEM_EXTENSIONS
 
@@ -35,6 +35,7 @@ AC_PROG_CC
 AC_PROG_MKDIR_P
 AM_PROG_CC_C_O
 AC_PROG_CC_STDC
+AC_PROG_LIBTOOL
 
 PKG_CHECK_MODULES(GIO2, gio-unix-2.0 >= GLIB2_REQUIRED)
 PKG_CHECK_MODULES(GLIB2, glib-2.0 >= GLIB2_REQUIRED)
@@ -64,6 +65,11 @@ LIBVIRT_ARG_WITH([DBUS_INTERFACES], [where D-Bus interfaces directory is],
                  ['$(datadir)/dbus-1/interfaces'])
 DBUS_INTERFACES_DIR="$with_dbus_interfaces"
 AC_SUBST([DBUS_INTERFACES_DIR])
+
+LIBVIRT_ARG_WITH([POLKIT_RULES], [directory for polkit rules],
+                 ['$(datadir)/polkit-1/rules.d'])
+POLKIT_RULES_DIR="$with_polkit_rules"
+AC_SUBST(POLKIT_RULES_DIR)
 
 LIBVIRT_ARG_WITH([SYSTEM_USER], [username to run system instance as],
                  ['libvirtdbus'])

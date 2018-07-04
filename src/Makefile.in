@@ -14,6 +14,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -91,8 +92,10 @@ host_triplet = @host@
 bin_PROGRAMS = libvirt-dbus$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/manywarnings.m4 \
-	$(top_srcdir)/m4/virt-arg.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/manywarnings.m4 $(top_srcdir)/m4/virt-arg.m4 \
 	$(top_srcdir)/m4/virt-compile-pie.m4 \
 	$(top_srcdir)/m4/virt-compile-warnings.m4 \
 	$(top_srcdir)/m4/virt-linker-relro.m4 \
@@ -104,24 +107,25 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
+LTLIBRARIES = $(noinst_LTLIBRARIES)
+libutil_la_LIBADD =
+am_libutil_la_OBJECTS = util.lo
+libutil_la_OBJECTS = $(am_libutil_la_OBJECTS)
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__objects_1 = libvirt_dbus-main.$(OBJEXT) \
-	libvirt_dbus-connect.$(OBJEXT) libvirt_dbus-util.$(OBJEXT) \
-	libvirt_dbus-domain.$(OBJEXT) libvirt_dbus-events.$(OBJEXT) \
-	libvirt_dbus-gdbus.$(OBJEXT) libvirt_dbus-network.$(OBJEXT) \
-	libvirt_dbus-nodedev.$(OBJEXT) libvirt_dbus-nwfilter.$(OBJEXT) \
-	libvirt_dbus-secret.$(OBJEXT) \
-	libvirt_dbus-storagepool.$(OBJEXT) \
-	libvirt_dbus-storagevol.$(OBJEXT)
-am_libvirt_dbus_OBJECTS = $(am__objects_1)
+am_libvirt_dbus_OBJECTS = connect.$(OBJEXT) domain.$(OBJEXT) \
+	events.$(OBJEXT) gdbus.$(OBJEXT) main.$(OBJEXT) \
+	network.$(OBJEXT) nodedev.$(OBJEXT) nwfilter.$(OBJEXT) \
+	secret.$(OBJEXT) storagepool.$(OBJEXT) storagevol.$(OBJEXT)
 libvirt_dbus_OBJECTS = $(am_libvirt_dbus_OBJECTS)
 am__DEPENDENCIES_1 =
-libvirt_dbus_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+libvirt_dbus_DEPENDENCIES = libutil.la $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-libvirt_dbus_LINK = $(CCLD) $(libvirt_dbus_CFLAGS) $(CFLAGS) \
-	$(libvirt_dbus_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -138,24 +142,26 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/build-aux/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
-AM_V_lt = $(am__v_lt_@AM_V@)
-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-am__v_lt_0 = --silent
-am__v_lt_1 = 
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
 AM_V_CC = $(am__v_CC_@AM_V@)
 am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
 am__v_CC_0 = @echo "  CC      " $@;
 am__v_CC_1 = 
 CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libvirt_dbus_SOURCES)
-DIST_SOURCES = $(libvirt_dbus_SOURCES)
+SOURCES = $(libutil_la_SOURCES) $(libvirt_dbus_SOURCES)
+DIST_SOURCES = $(libutil_la_SOURCES) $(libvirt_dbus_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -186,6 +192,7 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -202,11 +209,15 @@ DBUS_SYSTEM_POLICIES_DIR = @DBUS_SYSTEM_POLICIES_DIR@
 DBUS_SYSTEM_SERVICES_DIR = @DBUS_SYSTEM_SERVICES_DIR@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
+DSYMUTIL = @DSYMUTIL@
+DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FGREP = @FGREP@
 GIO2_CFLAGS = @GIO2_CFLAGS@
 GIO2_LIBS = @GIO2_LIBS@
 GLIB2_CFLAGS = @GLIB2_CFLAGS@
@@ -218,9 +229,11 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
+LIBTOOL = @LIBTOOL@
 LIBVIRT_CFLAGS = @LIBVIRT_CFLAGS@
 LIBVIRT_DBUS_MAJOR_VERSION = @LIBVIRT_DBUS_MAJOR_VERSION@
 LIBVIRT_DBUS_MICRO_VERSION = @LIBVIRT_DBUS_MICRO_VERSION@
@@ -233,10 +246,19 @@ LIBVIRT_GLIB_LIBS = @LIBVIRT_GLIB_LIBS@
 LIBVIRT_GLIB_REQUIRED = @LIBVIRT_GLIB_REQUIRED@
 LIBVIRT_LIBS = @LIBVIRT_LIBS@
 LIBVIRT_REQUIRED = @LIBVIRT_REQUIRED@
+LIPO = @LIPO@
+LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+NM = @NM@
+NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OTOOL = @OTOOL@
+OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -250,8 +272,11 @@ PIE_LDFLAGS = @PIE_LDFLAGS@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+POLKIT_RULES_DIR = @POLKIT_RULES_DIR@
+RANLIB = @RANLIB@
 RELAXED_FRAME_LIMIT_CFLAGS = @RELAXED_FRAME_LIMIT_CFLAGS@
 RELRO_LDFLAGS = @RELRO_LDFLAGS@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRICT_FRAME_LIMIT_CFLAGS = @STRICT_FRAME_LIMIT_CFLAGS@
@@ -263,7 +288,9 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -311,29 +338,10 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/src \
-	-DVIRT_DBUS_INTERFACES_DIR=\"$(DBUS_INTERFACES_DIR)\"
-
-DAEMON_SOURCES = \
-	main.c \
-	connect.c connect.h \
-	util.c util.h \
-	domain.c domain.h \
-	events.c events.h \
-	gdbus.c gdbus.h \
-	network.c network.h \
-	nodedev.c nodedev.h \
-	nwfilter.c nwfilter.h \
-	secret.c secret.h \
-	storagepool.c storagepool.h \
-	storagevol.c storagevol.h \
+	-DVIRT_DBUS_INTERFACES_DIR=\"$(DBUS_INTERFACES_DIR)\" \
 	$(NULL)
 
-EXTRA_DIST = \
-	$(DAEMON_SOURCES)
-
-CLEANFILES = 
-libvirt_dbus_SOURCES = $(DAEMON_SOURCES)
-libvirt_dbus_CFLAGS = \
+AM_CFLAGS = \
 	$(GIO2_CFLAGS) \
 	$(GLIB2_CFLAGS) \
 	$(LIBVIRT_CFLAGS) \
@@ -342,25 +350,60 @@ libvirt_dbus_CFLAGS = \
 	$(PIE_CFLAGS) \
 	$(NULL)
 
-libvirt_dbus_LDFLAGS = \
+AM_LDFLAGS = \
 	$(GIO2_LDFLAGS) \
 	$(GLIB2_LDFLAGS) \
 	$(LIBVIRT_LDFLAGS) \
 	$(LIBVIRT_GLIB_LDFLAGS) \
 	$(RELRO_LDFLAGS) \
-	$(PID_LDFLAGS) \
+	$(PIE_LDFLAGS) \
+	$(NULL)
+
+noinst_LTLIBRARIES = \
+	libutil.la \
+	$(NULL)
+
+libutil_la_SOURCES = \
+	util.c \
+	util.h \
+	$(NULL)
+
+libvirt_dbus_SOURCES = \
+	connect.c \
+	connect.h \
+	domain.c \
+	domain.h \
+	events.c \
+	events.h \
+	gdbus.c \
+	gdbus.h \
+	main.c \
+	network.c \
+	network.h \
+	nodedev.c \
+	nodedev.h \
+	nwfilter.c \
+	nwfilter.h \
+	secret.c \
+	secret.h \
+	storagepool.c \
+	storagepool.h \
+	storagevol.c \
+	storagevol.h \
 	$(NULL)
 
 libvirt_dbus_LDADD = \
+	libutil.la \
 	$(GIO2_LIBS) \
 	$(GLIB2_LIBS) \
 	$(LIBVIRT_LIBS) \
-	$(LIBVIRT_GLIB_LIBS)
+	$(LIBVIRT_GLIB_LIBS) \
+	$(NULL)
 
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .o .obj
+.SUFFIXES: .c .lo .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -390,6 +433,20 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
+	@list='$(noinst_LTLIBRARIES)'; \
+	locs=`for p in $$list; do echo $$p; done | \
+	      sed 's|^[^/]*$$|.|; s|/[^/]*$$||; s|$$|/so_locations|' | \
+	      sort -u`; \
+	test -z "$$locs" || { \
+	  echo rm -f $${locs}; \
+	  rm -f $${locs}; \
+	}
+
+libutil.la: $(libutil_la_OBJECTS) $(libutil_la_DEPENDENCIES) $(EXTRA_libutil_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK)  $(libutil_la_OBJECTS) $(libutil_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
@@ -400,6 +457,7 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	for p in $$list; do echo "$$p $$p"; done | \
 	sed 's/$(EXEEXT)$$//' | \
 	while read p p1; do if test -f $$p \
+	 || test -f $$p1 \
 	  ; then echo "$$p"; echo "$$p"; else :; fi; \
 	done | \
 	sed -e 'p;s,.*/,,;n;h' \
@@ -414,8 +472,8 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	while read type dir files; do \
 	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
 	    test -z "$$files" || { \
-	      echo " $(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(bindir)$$dir'"; \
-	      $(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
+	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(bindir)$$dir'"; \
+	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
 	    } \
 	; done
 
@@ -431,11 +489,17 @@ uninstall-binPROGRAMS:
 	cd "$(DESTDIR)$(bindir)" && rm -f $$files
 
 clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+	@list='$(bin_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
 
 libvirt-dbus$(EXEEXT): $(libvirt_dbus_OBJECTS) $(libvirt_dbus_DEPENDENCIES) $(EXTRA_libvirt_dbus_DEPENDENCIES) 
 	@rm -f libvirt-dbus$(EXEEXT)
-	$(AM_V_CCLD)$(libvirt_dbus_LINK) $(libvirt_dbus_OBJECTS) $(libvirt_dbus_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(libvirt_dbus_OBJECTS) $(libvirt_dbus_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -443,200 +507,48 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-connect.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-domain.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-events.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-gdbus.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-network.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-nodedev.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-nwfilter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-secret.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-storagepool.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-storagevol.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvirt_dbus-util.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connect.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/domain.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/events.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gdbus.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/network.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nodedev.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nwfilter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/secret.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/storagepool.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/storagevol.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
-libvirt_dbus-main.o: main.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-main.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-main.Tpo -c -o libvirt_dbus-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-main.Tpo $(DEPDIR)/libvirt_dbus-main.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='libvirt_dbus-main.o' libtool=no @AMDEPBACKSLASH@
+.c.lo:
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
-libvirt_dbus-main.obj: main.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-main.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-main.Tpo -c -o libvirt_dbus-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-main.Tpo $(DEPDIR)/libvirt_dbus-main.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='main.c' object='libvirt_dbus-main.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+mostlyclean-libtool:
+	-rm -f *.lo
 
-libvirt_dbus-connect.o: connect.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-connect.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-connect.Tpo -c -o libvirt_dbus-connect.o `test -f 'connect.c' || echo '$(srcdir)/'`connect.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-connect.Tpo $(DEPDIR)/libvirt_dbus-connect.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='connect.c' object='libvirt_dbus-connect.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-connect.o `test -f 'connect.c' || echo '$(srcdir)/'`connect.c
-
-libvirt_dbus-connect.obj: connect.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-connect.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-connect.Tpo -c -o libvirt_dbus-connect.obj `if test -f 'connect.c'; then $(CYGPATH_W) 'connect.c'; else $(CYGPATH_W) '$(srcdir)/connect.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-connect.Tpo $(DEPDIR)/libvirt_dbus-connect.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='connect.c' object='libvirt_dbus-connect.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-connect.obj `if test -f 'connect.c'; then $(CYGPATH_W) 'connect.c'; else $(CYGPATH_W) '$(srcdir)/connect.c'; fi`
-
-libvirt_dbus-util.o: util.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-util.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-util.Tpo -c -o libvirt_dbus-util.o `test -f 'util.c' || echo '$(srcdir)/'`util.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-util.Tpo $(DEPDIR)/libvirt_dbus-util.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='util.c' object='libvirt_dbus-util.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-util.o `test -f 'util.c' || echo '$(srcdir)/'`util.c
-
-libvirt_dbus-util.obj: util.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-util.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-util.Tpo -c -o libvirt_dbus-util.obj `if test -f 'util.c'; then $(CYGPATH_W) 'util.c'; else $(CYGPATH_W) '$(srcdir)/util.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-util.Tpo $(DEPDIR)/libvirt_dbus-util.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='util.c' object='libvirt_dbus-util.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-util.obj `if test -f 'util.c'; then $(CYGPATH_W) 'util.c'; else $(CYGPATH_W) '$(srcdir)/util.c'; fi`
-
-libvirt_dbus-domain.o: domain.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-domain.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-domain.Tpo -c -o libvirt_dbus-domain.o `test -f 'domain.c' || echo '$(srcdir)/'`domain.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-domain.Tpo $(DEPDIR)/libvirt_dbus-domain.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='domain.c' object='libvirt_dbus-domain.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-domain.o `test -f 'domain.c' || echo '$(srcdir)/'`domain.c
-
-libvirt_dbus-domain.obj: domain.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-domain.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-domain.Tpo -c -o libvirt_dbus-domain.obj `if test -f 'domain.c'; then $(CYGPATH_W) 'domain.c'; else $(CYGPATH_W) '$(srcdir)/domain.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-domain.Tpo $(DEPDIR)/libvirt_dbus-domain.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='domain.c' object='libvirt_dbus-domain.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-domain.obj `if test -f 'domain.c'; then $(CYGPATH_W) 'domain.c'; else $(CYGPATH_W) '$(srcdir)/domain.c'; fi`
-
-libvirt_dbus-events.o: events.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-events.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-events.Tpo -c -o libvirt_dbus-events.o `test -f 'events.c' || echo '$(srcdir)/'`events.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-events.Tpo $(DEPDIR)/libvirt_dbus-events.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='events.c' object='libvirt_dbus-events.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-events.o `test -f 'events.c' || echo '$(srcdir)/'`events.c
-
-libvirt_dbus-events.obj: events.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-events.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-events.Tpo -c -o libvirt_dbus-events.obj `if test -f 'events.c'; then $(CYGPATH_W) 'events.c'; else $(CYGPATH_W) '$(srcdir)/events.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-events.Tpo $(DEPDIR)/libvirt_dbus-events.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='events.c' object='libvirt_dbus-events.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-events.obj `if test -f 'events.c'; then $(CYGPATH_W) 'events.c'; else $(CYGPATH_W) '$(srcdir)/events.c'; fi`
-
-libvirt_dbus-gdbus.o: gdbus.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-gdbus.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-gdbus.Tpo -c -o libvirt_dbus-gdbus.o `test -f 'gdbus.c' || echo '$(srcdir)/'`gdbus.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-gdbus.Tpo $(DEPDIR)/libvirt_dbus-gdbus.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gdbus.c' object='libvirt_dbus-gdbus.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-gdbus.o `test -f 'gdbus.c' || echo '$(srcdir)/'`gdbus.c
-
-libvirt_dbus-gdbus.obj: gdbus.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-gdbus.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-gdbus.Tpo -c -o libvirt_dbus-gdbus.obj `if test -f 'gdbus.c'; then $(CYGPATH_W) 'gdbus.c'; else $(CYGPATH_W) '$(srcdir)/gdbus.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-gdbus.Tpo $(DEPDIR)/libvirt_dbus-gdbus.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gdbus.c' object='libvirt_dbus-gdbus.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-gdbus.obj `if test -f 'gdbus.c'; then $(CYGPATH_W) 'gdbus.c'; else $(CYGPATH_W) '$(srcdir)/gdbus.c'; fi`
-
-libvirt_dbus-network.o: network.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-network.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-network.Tpo -c -o libvirt_dbus-network.o `test -f 'network.c' || echo '$(srcdir)/'`network.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-network.Tpo $(DEPDIR)/libvirt_dbus-network.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='network.c' object='libvirt_dbus-network.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-network.o `test -f 'network.c' || echo '$(srcdir)/'`network.c
-
-libvirt_dbus-network.obj: network.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-network.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-network.Tpo -c -o libvirt_dbus-network.obj `if test -f 'network.c'; then $(CYGPATH_W) 'network.c'; else $(CYGPATH_W) '$(srcdir)/network.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-network.Tpo $(DEPDIR)/libvirt_dbus-network.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='network.c' object='libvirt_dbus-network.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-network.obj `if test -f 'network.c'; then $(CYGPATH_W) 'network.c'; else $(CYGPATH_W) '$(srcdir)/network.c'; fi`
-
-libvirt_dbus-nodedev.o: nodedev.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-nodedev.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-nodedev.Tpo -c -o libvirt_dbus-nodedev.o `test -f 'nodedev.c' || echo '$(srcdir)/'`nodedev.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-nodedev.Tpo $(DEPDIR)/libvirt_dbus-nodedev.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nodedev.c' object='libvirt_dbus-nodedev.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-nodedev.o `test -f 'nodedev.c' || echo '$(srcdir)/'`nodedev.c
-
-libvirt_dbus-nodedev.obj: nodedev.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-nodedev.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-nodedev.Tpo -c -o libvirt_dbus-nodedev.obj `if test -f 'nodedev.c'; then $(CYGPATH_W) 'nodedev.c'; else $(CYGPATH_W) '$(srcdir)/nodedev.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-nodedev.Tpo $(DEPDIR)/libvirt_dbus-nodedev.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nodedev.c' object='libvirt_dbus-nodedev.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-nodedev.obj `if test -f 'nodedev.c'; then $(CYGPATH_W) 'nodedev.c'; else $(CYGPATH_W) '$(srcdir)/nodedev.c'; fi`
-
-libvirt_dbus-nwfilter.o: nwfilter.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-nwfilter.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-nwfilter.Tpo -c -o libvirt_dbus-nwfilter.o `test -f 'nwfilter.c' || echo '$(srcdir)/'`nwfilter.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-nwfilter.Tpo $(DEPDIR)/libvirt_dbus-nwfilter.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nwfilter.c' object='libvirt_dbus-nwfilter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-nwfilter.o `test -f 'nwfilter.c' || echo '$(srcdir)/'`nwfilter.c
-
-libvirt_dbus-nwfilter.obj: nwfilter.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-nwfilter.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-nwfilter.Tpo -c -o libvirt_dbus-nwfilter.obj `if test -f 'nwfilter.c'; then $(CYGPATH_W) 'nwfilter.c'; else $(CYGPATH_W) '$(srcdir)/nwfilter.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-nwfilter.Tpo $(DEPDIR)/libvirt_dbus-nwfilter.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nwfilter.c' object='libvirt_dbus-nwfilter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-nwfilter.obj `if test -f 'nwfilter.c'; then $(CYGPATH_W) 'nwfilter.c'; else $(CYGPATH_W) '$(srcdir)/nwfilter.c'; fi`
-
-libvirt_dbus-secret.o: secret.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-secret.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-secret.Tpo -c -o libvirt_dbus-secret.o `test -f 'secret.c' || echo '$(srcdir)/'`secret.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-secret.Tpo $(DEPDIR)/libvirt_dbus-secret.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='secret.c' object='libvirt_dbus-secret.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-secret.o `test -f 'secret.c' || echo '$(srcdir)/'`secret.c
-
-libvirt_dbus-secret.obj: secret.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-secret.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-secret.Tpo -c -o libvirt_dbus-secret.obj `if test -f 'secret.c'; then $(CYGPATH_W) 'secret.c'; else $(CYGPATH_W) '$(srcdir)/secret.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-secret.Tpo $(DEPDIR)/libvirt_dbus-secret.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='secret.c' object='libvirt_dbus-secret.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-secret.obj `if test -f 'secret.c'; then $(CYGPATH_W) 'secret.c'; else $(CYGPATH_W) '$(srcdir)/secret.c'; fi`
-
-libvirt_dbus-storagepool.o: storagepool.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-storagepool.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-storagepool.Tpo -c -o libvirt_dbus-storagepool.o `test -f 'storagepool.c' || echo '$(srcdir)/'`storagepool.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-storagepool.Tpo $(DEPDIR)/libvirt_dbus-storagepool.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='storagepool.c' object='libvirt_dbus-storagepool.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-storagepool.o `test -f 'storagepool.c' || echo '$(srcdir)/'`storagepool.c
-
-libvirt_dbus-storagepool.obj: storagepool.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-storagepool.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-storagepool.Tpo -c -o libvirt_dbus-storagepool.obj `if test -f 'storagepool.c'; then $(CYGPATH_W) 'storagepool.c'; else $(CYGPATH_W) '$(srcdir)/storagepool.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-storagepool.Tpo $(DEPDIR)/libvirt_dbus-storagepool.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='storagepool.c' object='libvirt_dbus-storagepool.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-storagepool.obj `if test -f 'storagepool.c'; then $(CYGPATH_W) 'storagepool.c'; else $(CYGPATH_W) '$(srcdir)/storagepool.c'; fi`
-
-libvirt_dbus-storagevol.o: storagevol.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-storagevol.o -MD -MP -MF $(DEPDIR)/libvirt_dbus-storagevol.Tpo -c -o libvirt_dbus-storagevol.o `test -f 'storagevol.c' || echo '$(srcdir)/'`storagevol.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-storagevol.Tpo $(DEPDIR)/libvirt_dbus-storagevol.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='storagevol.c' object='libvirt_dbus-storagevol.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-storagevol.o `test -f 'storagevol.c' || echo '$(srcdir)/'`storagevol.c
-
-libvirt_dbus-storagevol.obj: storagevol.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -MT libvirt_dbus-storagevol.obj -MD -MP -MF $(DEPDIR)/libvirt_dbus-storagevol.Tpo -c -o libvirt_dbus-storagevol.obj `if test -f 'storagevol.c'; then $(CYGPATH_W) 'storagevol.c'; else $(CYGPATH_W) '$(srcdir)/storagevol.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvirt_dbus-storagevol.Tpo $(DEPDIR)/libvirt_dbus-storagevol.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='storagevol.c' object='libvirt_dbus-storagevol.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvirt_dbus_CFLAGS) $(CFLAGS) -c -o libvirt_dbus-storagevol.obj `if test -f 'storagevol.c'; then $(CYGPATH_W) 'storagevol.c'; else $(CYGPATH_W) '$(srcdir)/storagevol.c'; fi`
+clean-libtool:
+	-rm -rf .libs _libs
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -722,7 +634,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS)
 installdirs:
 	for dir in "$(DESTDIR)$(bindir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
@@ -749,7 +661,6 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -760,7 +671,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-libtool \
+	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -815,7 +727,8 @@ maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-compile mostlyclean-generic
+mostlyclean-am: mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool
 
 pdf: pdf-am
 
@@ -830,18 +743,19 @@ uninstall-am: uninstall-binPROGRAMS
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-am clean \
-	clean-binPROGRAMS clean-generic cscopelist-am ctags ctags-am \
-	distclean distclean-compile distclean-generic distclean-tags \
-	distdir dvi dvi-am html html-am info info-am install \
-	install-am install-binPROGRAMS install-data install-data-am \
-	install-dvi install-dvi-am install-exec install-exec-am \
-	install-html install-html-am install-info install-info-am \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic pdf pdf-am \
-	ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-binPROGRAMS
+	clean-binPROGRAMS clean-generic clean-libtool \
+	clean-noinstLTLIBRARIES cscopelist-am ctags ctags-am distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-binPROGRAMS install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 

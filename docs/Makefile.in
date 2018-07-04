@@ -89,8 +89,10 @@ build_triplet = @build@
 host_triplet = @host@
 subdir = docs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/manywarnings.m4 \
-	$(top_srcdir)/m4/virt-arg.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/manywarnings.m4 $(top_srcdir)/m4/virt-arg.m4 \
 	$(top_srcdir)/m4/virt-compile-pie.m4 \
 	$(top_srcdir)/m4/virt-compile-warnings.m4 \
 	$(top_srcdir)/m4/virt-linker-relro.m4 \
@@ -158,6 +160,7 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -174,11 +177,15 @@ DBUS_SYSTEM_POLICIES_DIR = @DBUS_SYSTEM_POLICIES_DIR@
 DBUS_SYSTEM_SERVICES_DIR = @DBUS_SYSTEM_SERVICES_DIR@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
+DSYMUTIL = @DSYMUTIL@
+DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FGREP = @FGREP@
 GIO2_CFLAGS = @GIO2_CFLAGS@
 GIO2_LIBS = @GIO2_LIBS@
 GLIB2_CFLAGS = @GLIB2_CFLAGS@
@@ -190,9 +197,11 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
+LIBTOOL = @LIBTOOL@
 LIBVIRT_CFLAGS = @LIBVIRT_CFLAGS@
 LIBVIRT_DBUS_MAJOR_VERSION = @LIBVIRT_DBUS_MAJOR_VERSION@
 LIBVIRT_DBUS_MICRO_VERSION = @LIBVIRT_DBUS_MICRO_VERSION@
@@ -205,10 +214,19 @@ LIBVIRT_GLIB_LIBS = @LIBVIRT_GLIB_LIBS@
 LIBVIRT_GLIB_REQUIRED = @LIBVIRT_GLIB_REQUIRED@
 LIBVIRT_LIBS = @LIBVIRT_LIBS@
 LIBVIRT_REQUIRED = @LIBVIRT_REQUIRED@
+LIPO = @LIPO@
+LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+NM = @NM@
+NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OTOOL = @OTOOL@
+OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -222,8 +240,11 @@ PIE_LDFLAGS = @PIE_LDFLAGS@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+POLKIT_RULES_DIR = @POLKIT_RULES_DIR@
+RANLIB = @RANLIB@
 RELAXED_FRAME_LIMIT_CFLAGS = @RELAXED_FRAME_LIMIT_CFLAGS@
 RELRO_LDFLAGS = @RELRO_LDFLAGS@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRICT_FRAME_LIMIT_CFLAGS = @STRICT_FRAME_LIMIT_CFLAGS@
@@ -235,7 +256,9 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -282,10 +305,22 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 POD2MAN = pod2man -c "Virtualization Support" -r "$(PACKAGE)-$(VERSION)"
-PODFILES = libvirt-dbus.pod
-man8_MANS = libvirt-dbus.8
-EXTRA_DIST = $(PODFILES)
-CLEANFILES = $(man8_MANS)
+PODFILES = \
+	libvirt-dbus.pod \
+	$(NULL)
+
+man8_MANS = \
+	libvirt-dbus.8 \
+	$(NULL)
+
+EXTRA_DIST = \
+	$(PODFILES) \
+	$(NULL)
+
+CLEANFILES = \
+	$(man8_MANS) \
+	$(NULL)
+
 all: all-am
 
 .SUFFIXES:
@@ -318,6 +353,12 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
 install-man8: $(man8_MANS)
 	@$(NORMAL_INSTALL)
 	@list1='$(man8_MANS)'; \
@@ -436,7 +477,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic mostlyclean-am
+clean-am: clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-am
 	-rm -f Makefile
@@ -488,7 +529,7 @@ maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-generic
+mostlyclean-am: mostlyclean-generic mostlyclean-libtool
 
 pdf: pdf-am
 
@@ -504,16 +545,17 @@ uninstall-man: uninstall-man8
 
 .MAKE: install-am install-strip
 
-.PHONY: all all-am check check-am clean clean-generic cscopelist-am \
-	ctags-am distclean distclean-generic distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-man8 install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
-	pdf-am ps ps-am tags-am uninstall uninstall-am uninstall-man \
+.PHONY: all all-am check check-am clean clean-generic clean-libtool \
+	cscopelist-am ctags-am distclean distclean-generic \
+	distclean-libtool distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-man8 install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am tags-am uninstall uninstall-am uninstall-man \
 	uninstall-man8
 
 .PRECIOUS: Makefile

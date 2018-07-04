@@ -88,10 +88,13 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 check_PROGRAMS = test_util$(EXEEXT)
+TESTS = $(check_PROGRAMS) $(am__EXEEXT_1)
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/manywarnings.m4 \
-	$(top_srcdir)/m4/virt-arg.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/manywarnings.m4 $(top_srcdir)/m4/virt-arg.m4 \
 	$(top_srcdir)/m4/virt-compile-pie.m4 \
 	$(top_srcdir)/m4/virt-compile-warnings.m4 \
 	$(top_srcdir)/m4/virt-linker-relro.m4 \
@@ -103,14 +106,19 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am_test_util_OBJECTS = test_util-test_util.$(OBJEXT) \
-	test_util-util.$(OBJEXT)
+am_test_util_OBJECTS = test_util-test_util.$(OBJEXT)
 test_util_OBJECTS = $(am_test_util_OBJECTS)
 am__DEPENDENCIES_1 =
-test_util_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+test_util_DEPENDENCIES = $(top_builddir)/src/libutil.la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-test_util_LINK = $(CCLD) $(test_util_CFLAGS) $(CFLAGS) \
-	$(test_util_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
+test_util_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_util_CFLAGS) \
+	$(CFLAGS) $(test_util_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -127,18 +135,20 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/build-aux/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
-AM_V_lt = $(am__v_lt_@AM_V@)
-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-am__v_lt_0 = --silent
-am__v_lt_1 = 
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
 AM_V_CC = $(am__v_CC_@AM_V@)
 am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
 am__v_CC_0 = @echo "  CC      " $@;
 am__v_CC_1 = 
 CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
@@ -353,6 +363,8 @@ am__set_TESTS_bases = \
   bases=`echo $$bases`
 RECHECK_LOGS = $(TEST_LOGS)
 AM_RECURSIVE_TARGETS = check recheck
+am__EXEEXT_1 = test_connect.py test_domain.py test_network.py \
+	test_nodedev.py test_storage.py
 TEST_SUITE_LOG = test-suite.log
 TEST_EXTENSIONS = @EXEEXT@ .test
 LOG_DRIVER = $(SHELL) $(top_srcdir)/build-aux/test-driver
@@ -380,6 +392,7 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -396,11 +409,15 @@ DBUS_SYSTEM_POLICIES_DIR = @DBUS_SYSTEM_POLICIES_DIR@
 DBUS_SYSTEM_SERVICES_DIR = @DBUS_SYSTEM_SERVICES_DIR@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
+DSYMUTIL = @DSYMUTIL@
+DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FGREP = @FGREP@
 GIO2_CFLAGS = @GIO2_CFLAGS@
 GIO2_LIBS = @GIO2_LIBS@
 GLIB2_CFLAGS = @GLIB2_CFLAGS@
@@ -412,9 +429,11 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
+LIBTOOL = @LIBTOOL@
 LIBVIRT_CFLAGS = @LIBVIRT_CFLAGS@
 LIBVIRT_DBUS_MAJOR_VERSION = @LIBVIRT_DBUS_MAJOR_VERSION@
 LIBVIRT_DBUS_MICRO_VERSION = @LIBVIRT_DBUS_MICRO_VERSION@
@@ -427,10 +446,19 @@ LIBVIRT_GLIB_LIBS = @LIBVIRT_GLIB_LIBS@
 LIBVIRT_GLIB_REQUIRED = @LIBVIRT_GLIB_REQUIRED@
 LIBVIRT_LIBS = @LIBVIRT_LIBS@
 LIBVIRT_REQUIRED = @LIBVIRT_REQUIRED@
+LIPO = @LIPO@
+LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+NM = @NM@
+NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OTOOL = @OTOOL@
+OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -444,8 +472,11 @@ PIE_LDFLAGS = @PIE_LDFLAGS@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+POLKIT_RULES_DIR = @POLKIT_RULES_DIR@
+RANLIB = @RANLIB@
 RELAXED_FRAME_LIMIT_CFLAGS = @RELAXED_FRAME_LIMIT_CFLAGS@
 RELRO_LDFLAGS = @RELRO_LDFLAGS@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRICT_FRAME_LIMIT_CFLAGS = @STRICT_FRAME_LIMIT_CFLAGS@
@@ -457,7 +488,9 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -503,44 +536,53 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
 test_helpers = \
 	xmldata.py \
 	libvirttest.py \
-	conftest.py
+	conftest.py \
+	$(NULL)
 
 test_programs = \
-	$(check_PROGRAMS) \
 	test_connect.py \
 	test_domain.py \
 	test_network.py \
 	test_nodedev.py \
-	test_storage.py
+	test_storage.py \
+	$(NULL)
 
 test_util_SOURCES = \
-	test_util.c $(top_srcdir)/src/util.c
+	test_util.c \
+	$(NULL)
 
 test_util_CFLAGS = \
-	-I$(top_srcdir)/src \
 	$(GIO2_CFLAGS) \
 	$(GLIB2_CFLAGS) \
-	$(LIBVIRT_CFLAGS)
+	$(LIBVIRT_CFLAGS) \
+	$(NULL)
 
 test_util_LDFLAGS = \
 	$(GIO2_LDFLAGS) \
 	$(GLIB2_LDFLAGS) \
-	$(LIBVIRT_LDFLAGS)
+	$(LIBVIRT_LDFLAGS) \
+	$(NULL)
 
 test_util_LDADD = \
+	$(top_builddir)/src/libutil.la \
 	$(GIO2_LIBS) \
 	$(GLIB2_LIBS) \
-	$(LIBVIRT_LIBS)
+	$(LIBVIRT_LIBS) \
+	$(NULL)
 
 EXTRA_DIST = \
 	$(test_helpers) \
 	$(test_programs) \
-	travis-run
+	travis-run \
+	$(NULL)
 
-TESTS = $(test_programs)
 AM_TESTS_ENVIRONMENT = \
 	export abs_top_builddir="$(abs_top_builddir)"; \
 	export VIRT_DBUS_INTERFACES_DIR="$(abs_top_srcdir)/data";
@@ -548,7 +590,7 @@ AM_TESTS_ENVIRONMENT = \
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .log .o .obj .test .test$(EXEEXT) .trs
+.SUFFIXES: .c .lo .log .o .obj .test .test$(EXEEXT) .trs
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -580,7 +622,13 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 $(am__aclocal_m4_deps):
 
 clean-checkPROGRAMS:
-	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
 
 test_util$(EXEEXT): $(test_util_OBJECTS) $(test_util_DEPENDENCIES) $(EXTRA_test_util_DEPENDENCIES) 
 	@rm -f test_util$(EXEEXT)
@@ -593,21 +641,30 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_util-test_util.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_util-util.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+.c.lo:
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
 test_util-test_util.o: test_util.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_util_CFLAGS) $(CFLAGS) -MT test_util-test_util.o -MD -MP -MF $(DEPDIR)/test_util-test_util.Tpo -c -o test_util-test_util.o `test -f 'test_util.c' || echo '$(srcdir)/'`test_util.c
@@ -623,19 +680,11 @@ test_util-test_util.obj: test_util.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_util_CFLAGS) $(CFLAGS) -c -o test_util-test_util.obj `if test -f 'test_util.c'; then $(CYGPATH_W) 'test_util.c'; else $(CYGPATH_W) '$(srcdir)/test_util.c'; fi`
 
-test_util-util.o: $(top_srcdir)/src/util.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_util_CFLAGS) $(CFLAGS) -MT test_util-util.o -MD -MP -MF $(DEPDIR)/test_util-util.Tpo -c -o test_util-util.o `test -f '$(top_srcdir)/src/util.c' || echo '$(srcdir)/'`$(top_srcdir)/src/util.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_util-util.Tpo $(DEPDIR)/test_util-util.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(top_srcdir)/src/util.c' object='test_util-util.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_util_CFLAGS) $(CFLAGS) -c -o test_util-util.o `test -f '$(top_srcdir)/src/util.c' || echo '$(srcdir)/'`$(top_srcdir)/src/util.c
+mostlyclean-libtool:
+	-rm -f *.lo
 
-test_util-util.obj: $(top_srcdir)/src/util.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_util_CFLAGS) $(CFLAGS) -MT test_util-util.obj -MD -MP -MF $(DEPDIR)/test_util-util.Tpo -c -o test_util-util.obj `if test -f '$(top_srcdir)/src/util.c'; then $(CYGPATH_W) '$(top_srcdir)/src/util.c'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/util.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_util-util.Tpo $(DEPDIR)/test_util-util.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(top_srcdir)/src/util.c' object='test_util-util.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_util_CFLAGS) $(CFLAGS) -c -o test_util-util.obj `if test -f '$(top_srcdir)/src/util.c'; then $(CYGPATH_W) '$(top_srcdir)/src/util.c'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/util.c'; fi`
+clean-libtool:
+	-rm -rf .libs _libs
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -958,7 +1007,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-checkPROGRAMS clean-generic mostlyclean-am
+clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
+	mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -1013,7 +1063,8 @@ maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-compile mostlyclean-generic
+mostlyclean-am: mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool
 
 pdf: pdf-am
 
@@ -1028,16 +1079,17 @@ uninstall-am:
 .MAKE: check-am install-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-TESTS check-am clean \
-	clean-checkPROGRAMS clean-generic cscopelist-am ctags ctags-am \
-	distclean distclean-compile distclean-generic distclean-tags \
-	distdir dvi dvi-am html html-am info info-am install \
-	install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
+	clean-checkPROGRAMS clean-generic clean-libtool cscopelist-am \
+	ctags ctags-am distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	recheck tags tags-am uninstall uninstall-am
 
 .PRECIOUS: Makefile

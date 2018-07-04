@@ -1,31 +1,8 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/src \
-	-DVIRT_DBUS_INTERFACES_DIR=\"$(DBUS_INTERFACES_DIR)\"
-
-DAEMON_SOURCES = \
-	main.c \
-	connect.c connect.h \
-	util.c util.h \
-	domain.c domain.h \
-	events.c events.h \
-	gdbus.c gdbus.h \
-	network.c network.h \
-	nodedev.c nodedev.h \
-	nwfilter.c nwfilter.h \
-	secret.c secret.h \
-	storagepool.c storagepool.h \
-	storagevol.c storagevol.h \
+	-DVIRT_DBUS_INTERFACES_DIR=\"$(DBUS_INTERFACES_DIR)\" \
 	$(NULL)
-
-EXTRA_DIST = \
-	$(DAEMON_SOURCES)
-CLEANFILES =
-
-bin_PROGRAMS = libvirt-dbus
-
-libvirt_dbus_SOURCES = $(DAEMON_SOURCES)
-
-libvirt_dbus_CFLAGS = \
+AM_CFLAGS = \
 	$(GIO2_CFLAGS) \
 	$(GLIB2_CFLAGS) \
 	$(LIBVIRT_CFLAGS) \
@@ -33,18 +10,55 @@ libvirt_dbus_CFLAGS = \
 	$(WARN_CFLAGS) \
 	$(PIE_CFLAGS) \
 	$(NULL)
-
-libvirt_dbus_LDFLAGS = \
+AM_LDFLAGS = \
 	$(GIO2_LDFLAGS) \
 	$(GLIB2_LDFLAGS) \
 	$(LIBVIRT_LDFLAGS) \
 	$(LIBVIRT_GLIB_LDFLAGS) \
 	$(RELRO_LDFLAGS) \
-	$(PID_LDFLAGS) \
+	$(PIE_LDFLAGS) \
 	$(NULL)
 
+noinst_LTLIBRARIES = \
+	libutil.la \
+	$(NULL)
+
+libutil_la_SOURCES = \
+	util.c \
+	util.h \
+	$(NULL)
+
+bin_PROGRAMS = \
+	libvirt-dbus \
+	$(NULL)
+
+libvirt_dbus_SOURCES = \
+	connect.c \
+	connect.h \
+	domain.c \
+	domain.h \
+	events.c \
+	events.h \
+	gdbus.c \
+	gdbus.h \
+	main.c \
+	network.c \
+	network.h \
+	nodedev.c \
+	nodedev.h \
+	nwfilter.c \
+	nwfilter.h \
+	secret.c \
+	secret.h \
+	storagepool.c \
+	storagepool.h \
+	storagevol.c \
+	storagevol.h \
+	$(NULL)
 libvirt_dbus_LDADD = \
+	libutil.la \
 	$(GIO2_LIBS) \
 	$(GLIB2_LIBS) \
 	$(LIBVIRT_LIBS) \
-	$(LIBVIRT_GLIB_LIBS)
+	$(LIBVIRT_GLIB_LIBS) \
+	$(NULL)
