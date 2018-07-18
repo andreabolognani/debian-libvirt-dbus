@@ -1,23 +1,61 @@
 #!/bin/sh
 
-# Prepare
+# Setup
 
-echo "# Preparing"
-eval $(dbus-launch --sh-syntax)
-echo 'ao 1 "/org/libvirt/Test/domain/_6695eb01_f6a4_8304_79aa_97f2502e193f"' >expected.log
+echo "# Starting dbus-daemon..."
+dbus-daemon \
+    --session \
+    --print-address=9 9>address.out \
+    >dbus-daemon.log 2>&1 \
+    &
 
-# Run
+echo "# Waiting for dbus-daemon..."
+for i in $(seq 0 9)
+do
+    export DBUS_SESSION_BUS_ADDRESS=$(cat address.out)
 
-echo "# Listing domains"
-busctl \
-     --user call \
-     org.libvirt /org/libvirt/Test \
-     org.libvirt.Connect ListDomains u 0 \
-     >actual.log 2>&1
+    test "$DBUS_SESSION_BUS_ADDRESS" && break
+    sleep 1
+done
 
-# Check
+echo "# Starting libvirt-dbus..."
+libvirt-dbus \
+    --session \
+    >libvirt-dbus.log 2>&1 \
+    &
 
-echo "# Checking"
-diff -Naru expected.log actual.log
+# Test
 
-exit $?
+echo \
+    'ao 1 "/org/libvirt/Test/domain/_6695eb01_f6a4_8304_79aa_97f2502e193f"' \
+    >expected.log
+
+echo "# Listing domains..."
+for i in $(seq 0 9)
+do
+    busctl \
+        --user call \
+        org.libvirt /org/libvirt/Test \
+        org.libvirt.Connect ListDomains u 0 \
+        >actual.log 2>&1
+
+    diff -Naru expected.log actual.log
+    rc=$?
+
+    test $rc -eq 0 && break
+    sleep 1
+done
+
+# Teardown
+
+echo "# Stopping libvirt-dbus..."
+pkill -P $$ libvirt-dbus
+
+echo "# Stopping dbus-daemon..."
+pkill -P $$ dbus-daemon
+
+test $rc -eq 0 || {
+    cat dbus-daemon.log libvirt-dbus.log >&2
+}
+
+exit $rc

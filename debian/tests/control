@@ -1,2 +1,2 @@
 Tests: smoke
-Depends: libvirt-dbus, dbus-x11, systemd
+Depends: libvirt-dbus, systemd
