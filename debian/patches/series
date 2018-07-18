@@ -1,1 +1,2 @@
+fix-make-check-for-root.patch
 debian/workaround-libvirt-packaging.patch
