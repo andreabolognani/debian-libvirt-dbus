@@ -8,7 +8,7 @@ Index: libvirt-dbus/tests/test_connect.py
 ===================================================================
 --- libvirt-dbus.orig/tests/test_connect.py
 +++ libvirt-dbus/tests/test_connect.py
-@@ -99,10 +99,6 @@ class TestConnect(libvirttest.BaseTestCl
+@@ -117,10 +117,6 @@ class TestConnect(libvirttest.BaseTestCl
      def test_connect_get_capabilities(self):
          assert isinstance(self.connect.GetCapabilities(), dbus.String)
  
