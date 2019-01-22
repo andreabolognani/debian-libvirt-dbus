@@ -28,9 +28,9 @@ Architecture: any
 Depends: dbus,
          policykit-1,
          libvirt-daemon,
+         libvirt-daemon-system,
          ${shlibs:Depends},
          ${misc:Depends}
-Suggests: libvirt-daemon-system
 Description: libvirt D-Bus API bindings
  Libvirt is a C toolkit to interact with the virtualization
  capabilities of recent versions of Linux (and other OSes). The
