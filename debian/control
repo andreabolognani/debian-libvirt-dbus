@@ -26,6 +26,7 @@ Rules-Requires-Root: no
 Package: libvirt-dbus
 Architecture: any
 Depends: dbus,
+         default-dbus-session-bus | dbus-session-bus,
          policykit-1,
          libvirt-daemon,
          libvirt-daemon-system,
