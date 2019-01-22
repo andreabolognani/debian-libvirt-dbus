@@ -33,7 +33,7 @@ class BaseTestClass():
         """Start libvirt-dbus for each test function
         """
         os.environ['LIBVIRT_DEBUG'] = '3'
-        self.libvirt_dbus = subprocess.Popen([exe])
+        self.libvirt_dbus = subprocess.Popen([exe, '--session'])
         self.bus = dbus.SessionBus()
 
         for i in range(10):
@@ -72,13 +72,41 @@ class BaseTestClass():
             raise TimeoutError()
 
     @pytest.fixture
+    def interface_create(self):
+        """ Fixture to define dummy interface on the test driver
+
+        This fixture should be used in the setup of every test manipulating
+        with interfaces.
+        """
+        path = self.connect.InterfaceDefineXML(xmldata.minimal_interface_xml, 0)
+        obj = self.bus.get_object('org.libvirt', path)
+        interface_obj = dbus.Interface(obj, 'org.libvirt.Interface')
+        interface_obj.Create(0)
+        return path, interface_obj
+
+    @pytest.fixture
     def node_device_create(self):
         """ Fixture to create dummy node device on the test driver
 
         This fixture should be used in the setup of every test manipulating
         with node devices.
         """
-        path = self.connect.NodeDeviceCreateXML(xmldata.minimal_node_device_xml, 0)
+        # We need a usable parent nodedev: possible candidates are
+        # scsi_host2 (available since libvirt 3.1.0) and
+        # test-scsi-host-vport (available until libvirt 3.0.0).
+        #
+        # Looking up a non-existing nodedev raises an exception, so
+        # we need to ignore them here: that's okay, because if we
+        # can't find any then NodeDeviceCreateXML() itself will fail
+        xml = xmldata.minimal_node_device_xml
+        for parent in ['scsi_host2', 'test-scsi-host-vport']:
+            try:
+                if self.connect.NodeDeviceLookupByName(parent):
+                    xml = xml.replace('@parent@', parent)
+                    break
+            except dbus.exceptions.DBusException:
+                pass
+        path = self.connect.NodeDeviceCreateXML(xml, 0)
         return path
 
     @pytest.fixture
@@ -93,7 +121,6 @@ class BaseTestClass():
                                        'org.libvirt.StoragePool')
         path = interface_obj.StorageVolCreateXML(xmldata.minimal_storage_vol_xml, 0)
         yield path
-
 
     def get_test_domain(self):
         path = self.connect.ListDomains(0)[0]
@@ -183,7 +210,7 @@ class DomainEventStoppedDetailType(IntEnum):
     SHUTDOWN = 0
     DESTROYED = 1
     CRASHED = 2
-    MIGRATED =	3
+    MIGRATED = 3
     SAVED = 4
     FAILED = 5
     FROM_SNAPSHOT = 6
@@ -192,9 +219,9 @@ class DomainEventStoppedDetailType(IntEnum):
 
 class DomainEventSuspendedDetailType(IntEnum):
     PAUSED = 0
-    MIGRATED	= 1
+    MIGRATED = 1
     IOERROR = 2
-    WATCHDOG	= 3
+    WATCHDOG = 3
     RESTORED = 4
     FROM_SNAPSHOT = 5
     API_ERROR = 6
@@ -227,9 +254,11 @@ class NetworkEvent(IntEnum):
     STARTED = 2
     STOPPED = 3
 
+
 class NodeDeviceEvent(IntEnum):
     CREATED = 0
     DELETED = 1
+
 
 class StoragePoolBuildFlags(IntEnum):
     NEW = 0

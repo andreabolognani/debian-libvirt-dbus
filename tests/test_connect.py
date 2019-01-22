@@ -22,7 +22,7 @@ class TestConnect(libvirttest.BaseTestClass):
 
         self.main_loop()
 
-    def test_comnect_domain_define_xml(self):
+    def test_connect_domain_define_xml(self):
         def domain_defined(path, event, detail):
             if event != libvirttest.DomainEvent.DEFINED:
                 return
@@ -84,7 +84,25 @@ class TestConnect(libvirttest.BaseTestClass):
         sysinfo = self.connect.GetSysinfo(0)
         assert isinstance(sysinfo, dbus.String)
 
-    def test_list_networks(self):
+    def test_connect_interface_define_xml(self):
+        path = self.connect.InterfaceDefineXML(xmldata.minimal_interface_xml, 0)
+        assert isinstance(path, dbus.ObjectPath)
+
+    @pytest.mark.usefixtures("interface_create")
+    @pytest.mark.parametrize("lookup_method_name,lookup_item", [
+        ("InterfaceLookupByName", 'Name'),
+        ("InterfaceLookupByMAC", 'MAC'),
+    ])
+    def test_connect_interface_lookup_by_property(self, lookup_method_name, lookup_item, interface_create):
+        """Parameterized test for all InterfaceLookupBy* API calls of Connect interface
+        """
+        original_path, _ = interface_create
+        obj = self.bus.get_object('org.libvirt', original_path)
+        prop = obj.Get('org.libvirt.Interface', lookup_item, dbus_interface=dbus.PROPERTIES_IFACE)
+        path = getattr(self.connect, lookup_method_name)(prop)
+        assert original_path == path
+
+    def test_connect_list_networks(self):
         networks = self.connect.ListNetworks(0)
         assert isinstance(networks, dbus.Array)
         assert len(networks) == 1
@@ -147,10 +165,10 @@ class TestConnect(libvirttest.BaseTestClass):
     @pytest.mark.parametrize("lookup_method_name,lookup_item", [
         ("NodeDeviceLookupByName", 'Name'),
     ])
-    def test_connect_node_device_lookup_by_property(self, lookup_method_name, lookup_item):
+    def test_connect_node_device_lookup_by_property(self, lookup_method_name, lookup_item, node_device_create):
         """Parameterized test for all NodeDeviceLookupBy* API calls of Connect interface
         """
-        original_path = self.node_device_create()
+        original_path = node_device_create
         obj = self.bus.get_object('org.libvirt', original_path)
         prop = obj.Get('org.libvirt.NodeDevice', lookup_item, dbus_interface=dbus.PROPERTIES_IFACE)
         path = getattr(self.connect, lookup_method_name)(prop)
@@ -177,7 +195,7 @@ class TestConnect(libvirttest.BaseTestClass):
 
         self.connect.connect_to_signal('NodeDeviceEvent', node_device_created)
 
-        path = self.connect.NodeDeviceCreateXML(xmldata.minimal_node_device_xml, 0)
+        path = self.node_device_create()
         assert isinstance(path, dbus.ObjectPath)
 
         self.main_loop()

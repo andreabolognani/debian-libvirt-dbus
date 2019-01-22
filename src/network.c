@@ -3,7 +3,7 @@
 
 #include <libvirt/libvirt.h>
 
-static void
+void
 virtDBusNetworkDHCPLeaseListFree(virNetworkDHCPLeasePtr *leases)
 {
     for (gint i = 0; leases[i] != NULL; i++)
@@ -12,8 +12,6 @@ virtDBusNetworkDHCPLeaseListFree(virNetworkDHCPLeasePtr *leases)
     g_free(leases);
 }
 
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(virNetworkDHCPLeasePtr, virtDBusNetworkDHCPLeaseListFree);
-
 static virNetworkPtr
 virtDBusNetworkGetVirNetwork(virtDBusConnect *connect,
                              const gchar *objectPath,
@@ -21,7 +19,7 @@ virtDBusNetworkGetVirNetwork(virtDBusConnect *connect,
 {
     virNetworkPtr network;
 
-    if (virtDBusConnectOpen(connect, error) < 0)
+    if (!virtDBusConnectOpen(connect, error))
         return NULL;
 
     network = virtDBusUtilVirNetworkFromBusPath(connect->connection,

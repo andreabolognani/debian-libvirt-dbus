@@ -33,6 +33,7 @@ polkit_DATA = \
 interfaces_files = \
 	org.libvirt.Connect.xml \
 	org.libvirt.Domain.xml \
+	org.libvirt.Interface.xml \
 	org.libvirt.Network.xml \
 	org.libvirt.NodeDevice.xml \
 	org.libvirt.NWFilter.xml \
@@ -62,12 +63,12 @@ CLEANFILES = \
 
 session/org.libvirt.service: session/org.libvirt.service.in
 	$(AM_V_GEN)$(MKDIR_P) session && \
-		sed -e 's|[@]bindir[@]|$(bindir)|g' < $< > $@-t && \
+		sed -e 's|[@]sbindir[@]|$(sbindir)|g' < $< > $@-t && \
 			mv $@-t $@
 
 system/org.libvirt.service: system/org.libvirt.service.in
 	$(AM_V_GEN)$(MKDIR_P) system && \
-		sed -e 's|[@]bindir[@]|$(bindir)|g' \
+		sed -e 's|[@]sbindir[@]|$(sbindir)|g' \
 		    -e 's|[@]SYSTEM_USER[@]|$(SYSTEM_USER)|' \
 			< $< > $@-t && mv $@-t $@
 

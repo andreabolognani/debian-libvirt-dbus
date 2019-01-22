@@ -6,7 +6,7 @@
 %global system_user libvirtdbus
 
 Name: libvirt-dbus
-Version: 1.2.0
+Version: 1.3.0
 Release: 1%{?dist}
 Summary: libvirt D-Bus API binding
 License: LGPLv2+
@@ -51,7 +51,7 @@ exit 0
 %files
 %doc README.md HACKING.md AUTHORS NEWS
 %license COPYING
-%{_bindir}/libvirt-dbus
+%{_sbindir}/libvirt-dbus
 %{_datadir}/dbus-1/services/org.libvirt.service
 %{_datadir}/dbus-1/system-services/org.libvirt.service
 %{_datadir}/dbus-1/system.d/org.libvirt.conf

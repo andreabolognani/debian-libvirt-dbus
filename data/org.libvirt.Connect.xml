@@ -148,11 +148,51 @@
       <arg name="flags" type="u" direction="in"/>
       <arg name="sysinfo" type="s" direction="out"/>
     </method>
+    <method name="InterfaceChangeBegin">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-interface.html#virInterfaceChangeBegin"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="InterfaceChangeCommit">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-interface.html#virInterfaceChangeCommit"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="InterfaceChangeRollback">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-interface.html#virInterfaceChangeRollback"/>
+      <arg name="flags" type="u" direction="in"/>
+    </method>
+    <method name="InterfaceDefineXML">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-interface.html#virInterfaceDefineXML"/>
+      <arg name="xml" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="interface" type="o" direction="out"/>
+    </method>
+    <method name="InterfaceLookupByMAC">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-interface.html#virInterfaceLookupByMACString"/>
+      <arg name="mac" type="s" direction="in"/>
+      <arg name="interface" type="o" direction="out"/>
+    </method>
+    <method name="InterfaceLookupByName">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-interface.html#virInterfaceLookupByName"/>
+      <arg name="name" type="s" direction="in"/>
+      <arg name="interface" type="o" direction="out"/>
+    </method>
     <method name="ListDomains">
       <annotation name="org.gtk.GDBus.DocString"
         value="See https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectListAllDomains"/>
       <arg name="flags" type="u" direction="in"/>
       <arg name="domains" type="ao" direction="out"/>
+    </method>
+    <method name="ListInterfaces">
+      <annotation name="org.gtk.GDBus.DocString"
+        value="See https://libvirt.org/html/libvirt-libvirt-interface.html#virConnectListAllInterfaces"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="interfaces" type="ao" direction="out"/>
     </method>
     <method name="ListNetworks">
       <annotation name="org.gtk.GDBus.DocString"
