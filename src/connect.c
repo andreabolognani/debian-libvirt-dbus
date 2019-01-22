@@ -1,6 +1,7 @@
 #include "connect.h"
 #include "domain.h"
 #include "events.h"
+#include "interface.h"
 #include "network.h"
 #include "nodedev.h"
 #include "nwfilter.h"
@@ -735,6 +736,154 @@ virtDBusConnectGetSysinfo(GVariant *inArgs,
 }
 
 static void
+virtDBusConnectInterfaceChangeBegin(GVariant *inArgs,
+                                    GUnixFDList *inFDs G_GNUC_UNUSED,
+                                    const gchar *objectPath G_GNUC_UNUSED,
+                                    gpointer userData,
+                                    GVariant **outArgs G_GNUC_UNUSED,
+                                    GUnixFDList **outFDs G_GNUC_UNUSED,
+                                    GError **error)
+{
+    virtDBusConnect *connect = userData;
+    guint flags;
+
+    g_variant_get(inArgs, "(u)", &flags);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    if (virInterfaceChangeBegin(connect->connection, flags) < 0)
+        virtDBusUtilSetLastVirtError(error);
+}
+
+static void
+virtDBusConnectInterfaceChangeCommit(GVariant *inArgs,
+                                     GUnixFDList *inFDs G_GNUC_UNUSED,
+                                     const gchar *objectPath G_GNUC_UNUSED,
+                                     gpointer userData,
+                                     GVariant **outArgs G_GNUC_UNUSED,
+                                     GUnixFDList **outFDs G_GNUC_UNUSED,
+                                     GError **error)
+{
+    virtDBusConnect *connect = userData;
+    guint flags;
+
+    g_variant_get(inArgs, "(u)", &flags);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    if (virInterfaceChangeCommit(connect->connection, flags) < 0)
+        virtDBusUtilSetLastVirtError(error);
+}
+
+static void
+virtDBusConnectInterfaceChangeRollback(GVariant *inArgs,
+                                       GUnixFDList *inFDs G_GNUC_UNUSED,
+                                       const gchar *objectPath G_GNUC_UNUSED,
+                                       gpointer userData,
+                                       GVariant **outArgs G_GNUC_UNUSED,
+                                       GUnixFDList **outFDs G_GNUC_UNUSED,
+                                       GError **error)
+{
+    virtDBusConnect *connect = userData;
+    guint flags;
+
+    g_variant_get(inArgs, "(u)", &flags);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    if (virInterfaceChangeRollback(connect->connection, flags) < 0)
+        virtDBusUtilSetLastVirtError(error);
+}
+
+static void
+virtDBusConnectInterfaceDefineXML(GVariant *inArgs,
+                                  GUnixFDList *inFDs G_GNUC_UNUSED,
+                                  const gchar *objectPath G_GNUC_UNUSED,
+                                  gpointer userData,
+                                  GVariant **outArgs,
+                                  GUnixFDList **outFDs G_GNUC_UNUSED,
+                                  GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virInterface) interface = NULL;
+    g_autofree gchar *path = NULL;
+    const gchar *xml;
+    guint flags;
+
+    g_variant_get(inArgs, "(&su)", &xml, &flags);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    interface = virInterfaceDefineXML(connect->connection, xml, flags);
+    if (!interface)
+        return virtDBusUtilSetLastVirtError(error);
+
+    path = virtDBusUtilBusPathForVirInterface(interface, connect->interfacePath);
+
+    *outArgs = g_variant_new("(o)", path);
+}
+
+static void
+virtDBusConnectInterfaceLookupByMAC(GVariant *inArgs,
+                                    GUnixFDList *inFDs G_GNUC_UNUSED,
+                                    const gchar *objectPath G_GNUC_UNUSED,
+                                    gpointer userData,
+                                    GVariant **outArgs,
+                                    GUnixFDList **outFDs G_GNUC_UNUSED,
+                                    GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virInterface) interface = NULL;
+    g_autofree gchar *path = NULL;
+    const gchar *mac;
+
+    g_variant_get(inArgs, "(&s)", &mac);
+
+    if (!virtDBusConnectOpen(connect, NULL))
+        return;
+
+    interface = virInterfaceLookupByMACString(connect->connection, mac);
+    if (!interface)
+        return virtDBusUtilSetLastVirtError(error);
+
+    path = virtDBusUtilBusPathForVirInterface(interface, connect->interfacePath);
+
+    *outArgs = g_variant_new("(o)", path);
+}
+
+static void
+virtDBusConnectInterfaceLookupByName(GVariant *inArgs,
+                                     GUnixFDList *inFDs G_GNUC_UNUSED,
+                                     const gchar *objectPath G_GNUC_UNUSED,
+                                     gpointer userData,
+                                     GVariant **outArgs,
+                                     GUnixFDList **outFDs G_GNUC_UNUSED,
+                                     GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virInterface) interface = NULL;
+    g_autofree gchar *path = NULL;
+    const gchar *name;
+
+    g_variant_get(inArgs, "(&s)", &name);
+
+    if (!virtDBusConnectOpen(connect, NULL))
+        return;
+
+    interface = virInterfaceLookupByName(connect->connection, name);
+    if (!interface)
+        return virtDBusUtilSetLastVirtError(error);
+
+    path = virtDBusUtilBusPathForVirInterface(interface, connect->interfacePath);
+
+    *outArgs = g_variant_new("(o)", path);
+}
+
+static void
 virtDBusConnectListDomains(GVariant *inArgs,
                            GUnixFDList *inFDs G_GNUC_UNUSED,
                            const gchar *objectPath G_GNUC_UNUSED,
@@ -769,6 +918,43 @@ virtDBusConnectListDomains(GVariant *inArgs,
 
     gdomains = g_variant_builder_end(&builder);
     *outArgs = g_variant_new_tuple(&gdomains, 1);
+}
+
+static void
+virtDBusConnectListInterfaces(GVariant *inArgs,
+                              GUnixFDList *inFDs G_GNUC_UNUSED,
+                              const gchar *objectPath G_GNUC_UNUSED,
+                              gpointer userData,
+                              GVariant **outArgs,
+                              GUnixFDList **outFDs G_GNUC_UNUSED,
+                              GError **error)
+{
+    virtDBusConnect *connect = userData;
+    g_autoptr(virInterfacePtr) interfaces = NULL;
+    guint flags;
+    GVariantBuilder builder;
+    GVariant *ginterfaces;
+
+    g_variant_get(inArgs, "(u)", &flags);
+
+    if (!virtDBusConnectOpen(connect, error))
+        return;
+
+    if (virConnectListAllInterfaces(connect->connection, &interfaces, flags) < 0)
+        return virtDBusUtilSetLastVirtError(error);
+
+    g_variant_builder_init(&builder, G_VARIANT_TYPE("ao"));
+
+    for (gint i = 0; interfaces[i]; i++) {
+        g_autofree gchar *path = NULL;
+        path = virtDBusUtilBusPathForVirInterface(interfaces[i],
+                                                  connect->interfacePath);
+
+        g_variant_builder_add(&builder, "o", path);
+    }
+
+    ginterfaces = g_variant_builder_end(&builder);
+    *outArgs = g_variant_new_tuple(&ginterfaces, 1);
 }
 
 static void
@@ -1765,7 +1951,14 @@ static virtDBusGDBusMethodTable virtDBusConnectMethodTable[] = {
     { "GetCPUModelNames", virtDBusConnectGetCPUModelNames },
     { "GetDomainCapabilities", virtDBusConnectGetDomainCapabilities },
     { "GetSysinfo", virtDBusConnectGetSysinfo },
+    { "InterfaceChangeBegin", virtDBusConnectInterfaceChangeBegin },
+    { "InterfaceChangeCommit", virtDBusConnectInterfaceChangeCommit },
+    { "InterfaceChangeRollback", virtDBusConnectInterfaceChangeRollback },
+    { "InterfaceDefineXML", virtDBusConnectInterfaceDefineXML },
+    { "InterfaceLookupByMAC", virtDBusConnectInterfaceLookupByMAC },
+    { "InterfaceLookupByName", virtDBusConnectInterfaceLookupByName },
     { "ListDomains", virtDBusConnectListDomains },
+    { "ListInterfaces", virtDBusConnectListInterfaces },
     { "ListNetworks", virtDBusConnectListNetworks },
     { "ListNodeDevices", virtDBusConnectListNodeDevices },
     { "ListNWFilters", virtDBusConnectListNWFilters },
@@ -1802,13 +1995,14 @@ static virtDBusGDBusMethodTable virtDBusConnectMethodTable[] = {
 
 static GDBusInterfaceInfo *interfaceInfo = NULL;
 
-static void
+void
 virtDBusConnectFree(virtDBusConnect *connect)
 {
     if (connect->connection)
         virtDBusConnectClose(connect, TRUE);
 
     g_free(connect->domainPath);
+    g_free(connect->interfacePath);
     g_free(connect->networkPath);
     g_free(connect->nodeDevPath);
     g_free(connect->nwfilterPath);
@@ -1817,7 +2011,6 @@ virtDBusConnectFree(virtDBusConnect *connect)
     g_free(connect->storageVolPath);
     g_free(connect);
 }
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(virtDBusConnect, virtDBusConnectFree);
 
 void
 virtDBusConnectNew(virtDBusConnect **connectp,
@@ -1866,6 +2059,10 @@ virtDBusConnectNew(virtDBusConnect **connectp,
                                 connect);
 
     virtDBusDomainRegister(connect, error);
+    if (error && *error)
+        return;
+
+    virtDBusInterfaceRegister(connect, error);
     if (error && *error)
         return;
 

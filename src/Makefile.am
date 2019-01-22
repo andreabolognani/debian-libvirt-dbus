@@ -28,7 +28,7 @@ libutil_la_SOURCES = \
 	util.h \
 	$(NULL)
 
-bin_PROGRAMS = \
+sbin_PROGRAMS = \
 	libvirt-dbus \
 	$(NULL)
 
@@ -41,6 +41,8 @@ libvirt_dbus_SOURCES = \
 	events.h \
 	gdbus.c \
 	gdbus.h \
+	interface.c \
+	interface.h \
 	main.c \
 	network.c \
 	network.h \

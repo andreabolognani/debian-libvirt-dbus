@@ -12,9 +12,10 @@ struct virtDBusConnect {
     GDBusConnection *bus;
     const gchar *uri;
     const gchar *connectPath;
-    gchar *nodeDevPath;
     gchar *domainPath;
+    gchar *interfacePath;
     gchar *networkPath;
+    gchar *nodeDevPath;
     gchar *nwfilterPath;
     gchar *secretPath;
     gchar *storagePoolPath;
@@ -43,3 +44,8 @@ virtDBusConnectOpen(virtDBusConnect *connect,
 
 void
 virtDBusConnectListFree(virtDBusConnect **connectList);
+
+void
+virtDBusConnectFree(virtDBusConnect *connect);
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(virtDBusConnect, virtDBusConnectFree);
