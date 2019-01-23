@@ -26,10 +26,3 @@ override_dh_auto_install:
 	install -m 0644 \
 	        debian/polkit/libvirt-dbus.pkla \
 	        debian/tmp/var/lib/polkit-1/localauthority/10-vendor.d/
-
-# Install changelogs.
-#
-# Upstream releases don't include a ChangeLog file, but the NEWS file
-# contains all information users might be interested in.
-override_dh_installchangelogs:
-	dh_installchangelogs NEWS
