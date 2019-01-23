@@ -20,7 +20,7 @@ Build-Depends: debhelper (>= 11),
                python3-gi,
                python3-dbus,
                python3-pytest
-Standards-Version: 4.1.5
+Standards-Version: 4.3.0
 Rules-Requires-Root: no
 
 Package: libvirt-dbus
