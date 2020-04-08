@@ -1,3 +1,12 @@
+libvirt-dbus (1.3.0-2) unstable; urgency=medium
+
+  * [31450a2] patches: Drop debian/workaround-libvirt-packaging.patch
+  * [356cb80] patches: Add tests-fix...xml-test-case.patch (Closes: #952200)
+  * [744cf54] debhelper: Use compat level 12
+  * [718d33b] control: Update Standards-Version to 4.5.0
+
+ -- Andrea Bolognani <eof@kiyuko.org>  Wed, 08 Apr 2020 21:59:58 +0200
+
 libvirt-dbus (1.3.0-1) unstable; urgency=medium
 
   * [5145a3b] New upstream version 1.3.0
