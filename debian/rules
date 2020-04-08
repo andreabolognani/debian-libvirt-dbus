@@ -2,10 +2,13 @@
 
 export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 
+BUILDDIR = $(CURDIR)/debian/build
 DESTDIR = $(CURDIR)/debian/tmp
 
 %:
-	dh $@ --with sysuser
+	dh $@ \
+	      --with sysuser \
+	      --builddir $(BUILDDIR)
 
 # Run configure.
 #
