@@ -1,2 +1,3 @@
 diff-ignore = "^.*$"
 tar-ignore = "debian/gbp.conf"
+tar-ignore = "debian/salsa-ci.yml"
