@@ -2,8 +2,13 @@
 
 export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 
+BUILDDIR = $(CURDIR)/debian/build
+DESTDIR = $(CURDIR)/debian/tmp
+
 %:
-	dh $@ --with sysuser
+	dh $@ \
+	      --with sysuser \
+	      --builddir $(BUILDDIR)
 
 # Run configure.
 #
@@ -19,10 +24,10 @@ override_dh_auto_configure:
 # We use debian/tmp as a staging area so that we can have full control
 # over what exactly ends up in the package.
 override_dh_auto_install:
-	dh_auto_install --destdir=debian/tmp
+	dh_auto_install --destdir=$(DESTDIR)
 	# polkit 105 compatibility
 	install -m 0755 -d \
-	        debian/tmp/var/lib/polkit-1/localauthority/10-vendor.d/
+	        $(DESTDIR)/var/lib/polkit-1/localauthority/10-vendor.d/
 	install -m 0644 \
 	        debian/polkit/libvirt-dbus.pkla \
-	        debian/tmp/var/lib/polkit-1/localauthority/10-vendor.d/
+	        $(DESTDIR)/var/lib/polkit-1/localauthority/10-vendor.d/

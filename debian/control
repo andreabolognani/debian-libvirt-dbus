@@ -6,7 +6,7 @@ Uploaders: Andrea Bolognani <eof@kiyuko.org>
 Homepage: https://libvirt.org/
 Vcs-Git: https://salsa.debian.org/libvirt-team/libvirt-dbus.git
 Vcs-Browser: https://salsa.debian.org/libvirt-team/libvirt-dbus
-Build-Depends: debhelper (>= 11),
+Build-Depends: debhelper-compat (= 12),
                dh-sysuser,
                autoconf,
                automake,
@@ -20,7 +20,7 @@ Build-Depends: debhelper (>= 11),
                python3-gi,
                python3-dbus,
                python3-pytest
-Standards-Version: 4.3.0
+Standards-Version: 4.5.0
 Rules-Requires-Root: no
 
 Package: libvirt-dbus
