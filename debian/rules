@@ -1,13 +1,14 @@
 #!/usr/bin/make -f
 
-export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+DEB_BUILD_MAINT_OPTIONS = hardening=+bindnow
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
 
 BUILDDIR = $(CURDIR)/debian/build
 DESTDIR = $(CURDIR)/debian/tmp
 
 %:
-	dh $@ \
-	      --with sysuser \
+	dh $@ --with sysuser \
 	      --builddir $(BUILDDIR)
 
 # Run configure.
@@ -23,9 +24,12 @@ override_dh_auto_configure:
 #
 # We use debian/tmp as a staging area so that we can have full control
 # over what exactly ends up in the package.
+#
+# We also add a few files which are maintained downstream and provide
+# polkit 105 compatibility, so that we can later pick them using the
+# same process used for those installed by the upstream build system.
 override_dh_auto_install:
-	dh_auto_install --destdir=$(DESTDIR)
-	# polkit 105 compatibility
+	dh_auto_install --destdir $(DESTDIR)
 	install -m 0755 -d \
 	        $(DESTDIR)/var/lib/polkit-1/localauthority/10-vendor.d/
 	install -m 0644 \
