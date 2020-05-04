@@ -1,0 +1,8 @@
+dist: trusty
+language: c
+sudo: true
+script: tests/travis-run
+env:
+ - ARCH=amd64
+ - ARCH=i386
+ - RELEASE=xenial

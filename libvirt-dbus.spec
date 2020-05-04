@@ -1,12 +1,13 @@
 # -*- rpm-spec -*-
 
+%global meson_version 0.49.0
 %global glib2_version 2.44.0
 %global libvirt_version 3.0.0
 %global libvirt_glib_version 0.0.7
 %global system_user libvirtdbus
 
 Name: libvirt-dbus
-Version: 1.3.0
+Version: 1.4.0
 Release: 1%{?dist}
 Summary: libvirt D-Bus API binding
 License: LGPLv2+
@@ -14,11 +15,15 @@ URL: https://libvirt.org/
 Source0: https://libvirt.org/sources/dbus/%{name}-%{version}.tar.xz
 
 BuildRequires: gcc
-BuildRequires: libtool
+BuildRequires: meson >= %{meson_version}
 BuildRequires: glib2-devel >= %{glib2_version}
 BuildRequires: libvirt-devel >= %{libvirt_version}
 BuildRequires: libvirt-glib-devel >= %{libvirt_glib_version}
-BuildRequires: /usr/bin/pod2man
+%if 0%{?rhel} == 7
+BuildRequires: python36-docutils
+%else
+BuildRequires: python3-docutils
+%endif
 
 Requires: dbus
 Requires: glib2 >= %{glib2_version}
@@ -35,11 +40,11 @@ This package provides D-Bus API for libvirt
 %autosetup
 
 %build
-%configure
-%make_build
+%meson
+%meson_build
 
 %install
-%make_install
+%meson_install
 
 %pre
 getent group %{system_user} >/dev/null || groupadd -r %{system_user}
@@ -49,7 +54,7 @@ getent passwd %{system_user} >/dev/null || \
 exit 0
 
 %files
-%doc README.md HACKING.md AUTHORS NEWS
+%doc AUTHORS.rst NEWS.rst
 %license COPYING
 %{_sbindir}/libvirt-dbus
 %{_datadir}/dbus-1/services/org.libvirt.service
