@@ -8,9 +8,7 @@ Vcs-Git: https://salsa.debian.org/libvirt-team/libvirt-dbus.git
 Vcs-Browser: https://salsa.debian.org/libvirt-team/libvirt-dbus
 Build-Depends: debhelper-compat (= 12),
                dh-sysuser,
-               autoconf,
-               automake,
-               libtool,
+               meson,
                pkg-config,
                libvirt-dev (>= 3.0.0),
                libglib2.0-dev (>= 2.44.0),
@@ -19,6 +17,7 @@ Build-Depends: debhelper-compat (= 12),
                python3,
                python3-gi,
                python3-dbus,
+               python3-docutils,
                python3-pytest
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
