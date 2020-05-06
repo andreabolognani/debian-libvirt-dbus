@@ -4,7 +4,7 @@ Upstream-Contact: libvirt developers <libvir-list@redhat.com>
 Source: https://libvirt.org/sources/dbus/
 
 Files: *
-Copyright: 2017-2019 Pavel Hrdina <phrdina@redhat.com>
+Copyright: 2017-2020 Pavel Hrdina <phrdina@redhat.com>
            2018 Katerina Koukiou <kkoukiou@redhat.com>
            2017 Lars Karlitski <lars@karlitski.net>
 License: LGPL-2.1+

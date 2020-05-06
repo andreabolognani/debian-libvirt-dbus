@@ -18,18 +18,24 @@ DESTDIR = $(CURDIR)/debian/tmp
 # about the name at some point in the future.
 override_dh_auto_configure:
 	dh_auto_configure -- \
-	                  --with-system-user=libvirtdbus
+	                  -Dsystem_user=libvirtdbus
 
 # Install files.
 #
 # We use debian/tmp as a staging area so that we can have full control
 # over what exactly ends up in the package.
 #
-# We also add a few files which are maintained downstream and provide
-# polkit 105 compatibility, so that we can later pick them using the
-# same process used for those installed by the upstream build system.
+# The upstream build system takes care of most files, but we also add
+# a few extra taken from both upstream and downstream: this will make
+# it possible to conveniently pick them up using the usual debhelper
+# tools later.
 override_dh_auto_install:
 	dh_auto_install --destdir $(DESTDIR)
+	install -m 0755 -d \
+	        $(DESTDIR)/usr/share/doc/libvirt-dbus/
+	install -m 0644 \
+	        NEWS.rst \
+	        $(DESTDIR)/usr/share/doc/libvirt-dbus/NEWS
 	install -m 0755 -d \
 	        $(DESTDIR)/var/lib/polkit-1/localauthority/10-vendor.d/
 	install -m 0644 \
