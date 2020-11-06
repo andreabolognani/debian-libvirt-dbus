@@ -1,0 +1,77 @@
+From: =?utf-8?q?J=C3=A1n_Tomko?= <jtomko@redhat.com>
+Date: Tue, 6 Oct 2020 09:51:00 +0200
+Subject: Handle APIs expecting unsigned long correctly
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+These APIs expect unsigned long, but the dbus type is "t".
+
+Use guint64 to store the input value from get_variant
+and rely on implicit C casts when we pass this as a value
+to the APIs expecting unsigned long.
+
+Signed-off-by: Ján Tomko <jtomko@redhat.com>
+(cherry picked from commit 9f75dcdaea8c78f50b0806f460358168e6aee581)
+---
+ src/domain.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/src/domain.c b/src/domain.c
+index 308cfa3..50bfa92 100644
+--- a/src/domain.c
++++ b/src/domain.c
+@@ -456,7 +456,7 @@ virtDBusDomainBlockCommit(GVariant *inArgs,
+     const gchar *disk;
+     const gchar *base;
+     const gchar *top;
+-    gulong bandwidth;
++    guint64 bandwidth;
+     guint flags;
+ 
+     g_variant_get(inArgs, "(&s&s&stu)", &disk, &base, &top, &bandwidth, &flags);
+@@ -539,7 +539,7 @@ virtDBusDomainBlockJobSetSpeed(GVariant *inArgs,
+     virtDBusConnect *connect = userData;
+     g_autoptr(virDomain) domain = NULL;
+     const gchar *disk;
+-    gulong bandwidth;
++    guint64 bandwidth;
+     guint flags;
+ 
+     g_variant_get(inArgs, "(&stu)", &disk, &bandwidth, &flags);
+@@ -602,7 +602,7 @@ virtDBusDomainBlockPull(GVariant *inArgs,
+     virtDBusConnect *connect = userData;
+     g_autoptr(virDomain) domain = NULL;
+     const gchar *disk;
+-    gulong bandwidth;
++    guint64 bandwidth;
+     guint flags;
+ 
+     g_variant_get(inArgs, "(&stu)", &disk, &bandwidth, &flags);
+@@ -628,7 +628,7 @@ virtDBusDomainBlockRebase(GVariant *inArgs,
+     g_autoptr(virDomain) domain = NULL;
+     const gchar *disk;
+     const gchar *base;
+-    gulong bandwidth;
++    guint64 bandwidth;
+     guint flags;
+ 
+     g_variant_get(inArgs, "(&s&stu)", &disk, &base, &bandwidth, &flags);
+@@ -2184,7 +2184,7 @@ virtDBusDomainMigrateSetMaxSpeed(GVariant *inArgs,
+ {
+     virtDBusConnect *connect = userData;
+     g_autoptr(virDomain) domain = NULL;
+-    gulong bandwidth;
++    guint64 bandwidth;
+     guint flags;
+ 
+     g_variant_get(inArgs, "(tu)", &bandwidth, &flags);
+@@ -2715,7 +2715,7 @@ virtDBusDomainSetMemory(GVariant *inArgs,
+ {
+     virtDBusConnect *connect = userData;
+     g_autoptr(virDomain) domain = NULL;
+-    gulong memory;
++    guint64 memory;
+     guint flags;
+ 
+     g_variant_get(inArgs, "(tu)", &memory, &flags);

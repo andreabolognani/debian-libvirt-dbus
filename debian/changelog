@@ -1,3 +1,9 @@
+libvirt-dbus (1.4.0-2) unstable; urgency=medium
+
+  * [3d0e87e] patches: Backport recent fixes (Closes: #971171)
+
+ -- Andrea Bolognani <eof@kiyuko.org>  Fri, 06 Nov 2020 11:47:28 +0100
+
 libvirt-dbus (1.4.0-1) unstable; urgency=medium
 
   * [47a48e5] New upstream version 1.4.0

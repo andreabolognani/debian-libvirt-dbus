@@ -1,0 +1,42 @@
+From: =?utf-8?b?IkRhbmllbCBQLiBCZXJyYW5nw6ki?= <berrange@redhat.com>
+Date: Wed, 24 Jun 2020 14:07:14 +0100
+Subject: src: fix double free of virDomain object
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+The virDomainSnapshotGetDomain() method does NOT increment the
+refcount on the returned virDomain, so it must not be unrefed.
+
+This double free is responsible for random failures of the
+test_snapshot.py tests.
+
+Reviewed-by: Andrea Bolognani <abologna@redhat.com>
+Signed-off-by: Daniel P. Berrangé <berrange@redhat.com>
+(cherry picked from commit b91167a9f0e4fb480a2161b85ae4ac3f6588b3d9)
+---
+ src/domainsnapshot.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/domainsnapshot.c b/src/domainsnapshot.c
+index f3571a1..78a9f9a 100644
+--- a/src/domainsnapshot.c
++++ b/src/domainsnapshot.c
+@@ -63,7 +63,7 @@ virtDBusDomainSnapshotGetParent(GVariant *inArgs,
+     g_autoptr(virDomainSnapshot) domainSnapshot = NULL;
+     g_autoptr(virDomainSnapshot) parent = NULL;
+     guint flags;
+-    g_autoptr(virDomain) domain = NULL;
++    virDomainPtr domain = NULL;
+     g_autofree gchar *parentPath = NULL;
+ 
+     g_variant_get(inArgs, "(u)", &flags);
+@@ -159,7 +159,7 @@ virtDBusDomainSnapshotListAllChildren(GVariant *inArgs,
+     guint flags;
+     GVariantBuilder builder;
+     GVariant *gdomainSnapshots;
+-    g_autoptr(virDomain) domain = NULL;
++    virDomainPtr domain = NULL;
+ 
+     g_variant_get(inArgs, "(u)", &flags);
+ 
