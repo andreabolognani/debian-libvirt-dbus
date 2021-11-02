@@ -1,0 +1,13 @@
+[Unit]
+Description=Libvirt DBus Service
+
+[Service]
+BusName=org.libvirt
+DynamicUser=yes
+User=@SYSTEM_USER@
+Group=@SYSTEM_USER@
+SupplementaryGroups=@UNIX_SOCKET_GROUP@
+ExecStart=@sbindir@/libvirt-dbus --system
+
+[Install]
+Alias=org.libvirt.service
