@@ -456,7 +456,7 @@ virtDBusDomainBlockCommit(GVariant *inArgs,
     const gchar *disk;
     const gchar *base;
     const gchar *top;
-    gulong bandwidth;
+    guint64 bandwidth;
     guint flags;
 
     g_variant_get(inArgs, "(&s&s&stu)", &disk, &base, &top, &bandwidth, &flags);
@@ -539,7 +539,7 @@ virtDBusDomainBlockJobSetSpeed(GVariant *inArgs,
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
     const gchar *disk;
-    gulong bandwidth;
+    guint64 bandwidth;
     guint flags;
 
     g_variant_get(inArgs, "(&stu)", &disk, &bandwidth, &flags);
@@ -564,7 +564,7 @@ virtDBusDomainBlockPeek(GVariant *inArgs,
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
     const gchar *disk;
-    gulong offset;
+    guint64 offset;
     gsize size;
     guint flags;
     g_autofree guchar *buffer = NULL;
@@ -602,7 +602,7 @@ virtDBusDomainBlockPull(GVariant *inArgs,
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
     const gchar *disk;
-    gulong bandwidth;
+    guint64 bandwidth;
     guint flags;
 
     g_variant_get(inArgs, "(&stu)", &disk, &bandwidth, &flags);
@@ -628,7 +628,7 @@ virtDBusDomainBlockRebase(GVariant *inArgs,
     g_autoptr(virDomain) domain = NULL;
     const gchar *disk;
     const gchar *base;
-    gulong bandwidth;
+    guint64 bandwidth;
     guint flags;
 
     g_variant_get(inArgs, "(&s&stu)", &disk, &base, &bandwidth, &flags);
@@ -655,7 +655,7 @@ virtDBusDomainBlockResize(GVariant *inArgs,
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
     const gchar *disk;
-    gulong size;
+    guint64 size;
     guint flags;
 
     g_variant_get(inArgs, "(&stu)", &disk, &size, &flags);
@@ -894,7 +894,7 @@ virtDBusDomainFSTrim(GVariant *inArgs,
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
     const gchar *mountpoint;
-    gulong minimum;
+    guint64 minimum;
     guint flags;
 
     g_variant_get(inArgs, "(stu)", &mountpoint, &minimum, &flags);
@@ -2010,7 +2010,7 @@ virtDBusDomainMemoryPeek(GVariant *inArgs,
 {
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
-    gulong offset;
+    guint64 offset;
     gsize size;
     guint flags;
     g_autofree guchar *buffer = NULL;
@@ -2078,7 +2078,7 @@ virtDBusDomainMigrateGetCompressionCache(GVariant *inArgs,
 {
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
-    gulong cacheSize;
+    guint64 cacheSize;
     guint flags;
 
     g_variant_get(inArgs, "(u)", &flags);
@@ -2108,7 +2108,8 @@ virtDBusDomainMigrateGetMaxSpeed(GVariant *inArgs,
 {
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
-    gulong bandwidth;
+    gulong tmp;
+    guint64 bandwidth;
     guint flags;
 
     g_variant_get(inArgs, "(u)", &flags);
@@ -2117,8 +2118,9 @@ virtDBusDomainMigrateGetMaxSpeed(GVariant *inArgs,
     if (!domain)
         return;
 
-    if (virDomainMigrateGetMaxSpeed(domain, &bandwidth, flags) < 0)
+    if (virDomainMigrateGetMaxSpeed(domain, &tmp, flags) < 0)
         return virtDBusUtilSetLastVirtError(error);
+    bandwidth = tmp;
 
     *outArgs = g_variant_new("(t)", bandwidth);
 }
@@ -2134,7 +2136,7 @@ virtDBusDomainMigrateSetCompressionCache(GVariant *inArgs,
 {
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
-    gulong cacheSize;
+    guint64 cacheSize;
     guint flags;
 
     g_variant_get(inArgs, "(tu)", &cacheSize, &flags);
@@ -2158,7 +2160,7 @@ virtDBusDomainMigrateSetMaxDowntime(GVariant *inArgs,
 {
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
-    gulong downtime;
+    guint64 downtime;
     guint flags;
 
     g_variant_get(inArgs, "(tu)", &downtime, &flags);
@@ -2182,7 +2184,7 @@ virtDBusDomainMigrateSetMaxSpeed(GVariant *inArgs,
 {
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
-    gulong bandwidth;
+    guint64 bandwidth;
     guint flags;
 
     g_variant_get(inArgs, "(tu)", &bandwidth, &flags);
@@ -2713,7 +2715,7 @@ virtDBusDomainSetMemory(GVariant *inArgs,
 {
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
-    gulong memory;
+    guint64 memory;
     guint flags;
 
     g_variant_get(inArgs, "(tu)", &memory, &flags);
@@ -2947,7 +2949,7 @@ virtDBusDomainSetTime(GVariant *inArgs,
 {
     virtDBusConnect *connect = userData;
     g_autoptr(virDomain) domain = NULL;
-    gulong seconds;
+    guint64 seconds;
     guint nseconds;
     guint flags;
 

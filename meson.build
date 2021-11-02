@@ -1,17 +1,32 @@
 project(
     'libvirt-dbus', 'c',
-    version: '1.4.0',
+    version: '1.4.1',
     license: 'LGPLv2+',
     meson_version: '>= 0.49.0',
     default_options: [
         'buildtype=debugoptimized',
         'c_std=gnu99',
+        'warning_level=2',
     ],
 )
 
 prefix = get_option('prefix')
 datadir = prefix / get_option('datadir')
 sbindir = prefix / get_option('sbindir')
+if get_option('init_script') == 'check'
+    if find_program('systemctl', required: false).found()
+        init_script = 'systemd'
+    else
+        init_script = 'other'
+    endif
+else
+    init_script = get_option('init_script')
+endif
+if init_script == 'systemd'
+    systemd_dep = dependency('systemd')
+    systemd_user_unit_dir = systemd_dep.get_pkgconfig_variable('systemduserunitdir')
+    systemd_system_unit_dir = systemd_dep.get_pkgconfig_variable('systemdsystemunitdir')
+endif
 
 opt_dirs = [
     'dbus_interfaces',
@@ -57,6 +72,7 @@ git = run_command('test', '-d', '.git').returncode() == 0
 # Configure options
 
 conf.set('SYSTEM_USER', get_option('system_user'))
+conf.set('UNIX_SOCKET_GROUP', get_option('unix_socket_group'))
 
 
 # Compile flags
@@ -65,11 +81,9 @@ common_flags = [
     '-DVIRT_DBUS_INTERFACES_DIR="@0@"'.format(dbus_interfaces_dir),
 ]
 
-cc_flags = [
-    '-W',
+warn_flags = [
     '-Waddress',
     '-Waggressive-loop-optimizations',
-    '-Wall',
     '-Warray-bounds=2',
     '-Wattributes',
     '-Wbad-function-cast',
@@ -92,7 +106,6 @@ cc_flags = [
     '-Wduplicated-cond',
     '-Wempty-body',
     '-Wendif-labels',
-    '-Wextra',
     '-Wformat',
     '-Wformat-contains-nul',
     '-Wformat-extra-args',
@@ -203,23 +216,31 @@ cc_flags = [
     '-fipa-pure-const',
     '-fno-common',
 ]
+
+cc_flags = []
+if get_option('warning_level') == '2'
+    cc_flags += warn_flags
+    git_werror = get_option('git_werror')
+    if (git_werror.enabled() or git_werror.auto()) and git and not get_option('werror')
+        cc_flags += ['-Werror']
+    endif
+
+    if host_machine.cpu_family() != 'aarch64'
+        if host_machine.system() == 'linux'
+            cc_flags += ['-fstack-protector-strong']
+        endif
+        if host_machine.system() == 'freebsd'
+            cc_flags += ['-fstack-protector']
+        endif
+    endif
+endif
+
 ld_flags = [
     '-Wl,-z,now',
     '-Wl,-z,relro',
 ]
 
-if git
-    cc_flags += ['-Werror']
-endif
 
-if host_machine.cpu_family() != 'aarch64'
-    if host_machine.system() == 'linux'
-        cc_flags += ['-fstack-protector-strong']
-    endif
-    if host_machine.system() == 'freebsd'
-        cc_flags += ['-fstack-protector']
-    endif
-endif
 
 if host_machine.system() not in ['cygwin', 'windows']
     cc_flags += ['-fPIE', '-DPIE']
