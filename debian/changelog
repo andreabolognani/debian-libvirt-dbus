@@ -1,3 +1,9 @@
+libvirt-dbus (1.4.1-1) UNRELEASED; urgency=medium
+
+  * [6e67b2c] New upstream version 1.4.1
+
+ -- Andrea Bolognani <eof@kiyuko.org>  Tue, 02 Nov 2021 23:55:32 +0100
+
 libvirt-dbus (1.4.0-2) unstable; urgency=medium
 
   * [3d0e87e] patches: Backport recent fixes (Closes: #971171)
