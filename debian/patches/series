@@ -1,6 +1,0 @@
-backport/src-fix-double-free-of-virDomain-object.patch
-backport/tests-skip-CPU-pinning-test-on-libvirt-6.6.0.patch
-backport/tests-vcpupininfo-use-pytest.skip.patch
-backport/Handle-APIs-returning-unsigned-long-correctly.patch
-backport/Handle-APIs-expecting-unsigned-long-correctly.patch
-backport/Do-not-use-gulong-for-storing-uint64.patch
