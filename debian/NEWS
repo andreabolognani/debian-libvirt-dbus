@@ -1,0 +1,10 @@
+libvirt-dbus (1.4.1-1) unstable; urgency=medium
+
+  The user "libvirtdbus" is now added to group "libvirt" on install/upgrade.
+
+  This group is only used to manage libvirt socket access and libvirt-dbus
+  needs to be able to connect there (In Debian via a policykit rule in
+  /var/lib/polkit-1/localauthority/10-vendor.d/60-libvirt.pkla and in Ubuntu
+  directly on the socket permissions).
+
+ -- Christian Ehrhardt <christian.ehrhardt@canonical.com>  Wed, 03 Nov 2021 10:22:15 +0100
