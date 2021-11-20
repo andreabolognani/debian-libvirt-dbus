@@ -8,8 +8,7 @@ BUILDDIR = $(CURDIR)/debian/build
 DESTDIR = $(CURDIR)/debian/tmp
 
 %:
-	dh $@ --with sysuser \
-	      --builddir $(BUILDDIR)
+	dh $@ --builddir $(BUILDDIR)
 
 # Run configure.
 #

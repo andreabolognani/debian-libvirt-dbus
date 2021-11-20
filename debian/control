@@ -7,7 +7,6 @@ Homepage: https://libvirt.org/
 Vcs-Git: https://salsa.debian.org/libvirt-team/libvirt-dbus.git
 Vcs-Browser: https://salsa.debian.org/libvirt-team/libvirt-dbus
 Build-Depends: debhelper-compat (= 12),
-               dh-sysuser,
                meson,
                pkg-config,
                libvirt-dev (>= 3.0.0),
@@ -29,6 +28,7 @@ Depends: dbus,
          policykit-1,
          libvirt-daemon,
          libvirt-daemon-system,
+         adduser,
          ${shlibs:Depends},
          ${misc:Depends}
 Description: libvirt D-Bus API bindings
