@@ -53,9 +53,9 @@ case "$1" in
         # This is meant to allow admins to remove the user and not
         # have it re-added each time the package upgrades
         if [ -z "$2" ] || dpkg --compare-versions -- "$2" lt "1.4.1-1"; then
-          if getent group libvirt >/dev/null; then
-              adduser libvirtdbus libvirt
-          fi
+            if getent group libvirt >/dev/null 2>&1; then
+                adduser libvirtdbus libvirt
+            fi
         fi
     ;;
 esac
