@@ -17,6 +17,7 @@ DESTDIR = $(CURDIR)/debian/tmp
 # about the name at some point in the future.
 override_dh_auto_configure:
 	dh_auto_configure -- \
+	                  -Dinit_script=other \
 	                  -Dsystem_user=libvirtdbus
 
 # Install files.
