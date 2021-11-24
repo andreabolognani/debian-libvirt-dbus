@@ -24,13 +24,16 @@ override_dh_auto_configure:
 #
 # We use debian/tmp as a staging area so that we can have full control
 # over what exactly ends up in the package.
+override_dh_auto_install:
+	dh_auto_install --destdir $(DESTDIR)
+
+# Install extra files.
 #
 # The upstream build system takes care of most files, but we also add
 # a few extra taken from both upstream and downstream: this will make
 # it possible to conveniently pick them up using the usual debhelper
 # tools later.
-override_dh_auto_install:
-	dh_auto_install --destdir $(DESTDIR)
+execute_after_dh_auto_install:
 	install -m 0755 -d \
 	        $(DESTDIR)/usr/share/doc/libvirt-dbus/
 	install -m 0644 \
