@@ -27,26 +27,34 @@ case "$1" in
                     libvirtdbus
         fi
 
-        # After users are created: add user to libvirt group
-        # if policykit isn't used to manage access to libvirt sockets then it
-        # will use group based permission management with the group "libvirt"
-        # being the one to gain access.
+        # Debian, like upstream, uses policykit to control access to libvirt:
+        # specifically, /run/libvirt/libvirt-sock has ownership root:root and
+        # permissions 666, but the policy defined in
+        # /var/lib/polkit-1/localauthority/10-vendor.d/60-libvirt.pkla prevents
+        # users other than those in the libvirt group to actually
+        # perform management operations.
         #
-        # The socket /run/libvirt/libvirt-sock is default-owned by group
-        # "libvirt" in Ubuntu. In Debian this socket managed by policykit and
-        # therefore not needed usually, but users might opt-out or for
-        # compatibiliy with the sysV handling have it set to use this user.
+        # Ubuntu doesn't use policykit for this, and relies on standard Unix
+        # permissions instead: specifically, the socket has ownership
+        # root:libvirt and permissions 660.
         #
-        # libvirt-dbus itself is considered safe via
-        # /usr/share/dbus-1/system.d/org.libvirt.conf so we can allow that
-        # by default.
+        # The end result is the same, in that only root and users that are in
+        # the libvirt group can perform privileged operations.
         #
-        # Only do that on new installs or upgrades from before 1.4.1-1.
-        # This is meant to allow admins to remove the user and not
-        # have it re-added each time the package upgrades
+        # For libvirt-dbus to work, the libvirtdbus user that the daemon runs
+        # as needs to be able to open a privileged connection to libvirt.
+        #
+        # Once again, Debian achieves this through policykit by installing a
+        # special rule, whereas Ubuntu needs to add the user to the libvirt
+        # group, which is what we do here. Note that the user is only added to
+        # the group on fresh installs or upgrades from old versions of
+        # libvirt-dbus, because we don't want to accidentally override local
+        # changes to group membership.
         if [ -z "$2" ] || dpkg --compare-versions -- "$2" lt "1.4.1-1"; then
-            if getent group libvirt >/dev/null 2>&1; then
-                adduser libvirtdbus libvirt
+            if dpkg-vendor --derives-from Ubuntu; then
+                if getent group libvirt >/dev/null 2>&1; then
+                    adduser libvirtdbus libvirt
+                fi
             fi
         fi
     ;;
