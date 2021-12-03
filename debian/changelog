@@ -1,8 +1,20 @@
-libvirt-dbus (1.4.1-1) UNRELEASED; urgency=medium
+libvirt-dbus (1.4.1-1) unstable; urgency=medium
 
+  [ Andrea Bolognani ]
   * [6e67b2c] New upstream version 1.4.1
+    - Drop all backported patches
+  * [f479b98] rules: Explicitly disable deep systemd integration
+    - Needed to keep libvirt-dbus working under other init systems
+  * [b141c8c] debhelper: Use compat level 13
+  * [85643fe] control: Update Standards-Version to 4.6.0
+    - No changes needed
 
- -- Andrea Bolognani <eof@kiyuko.org>  Tue, 02 Nov 2021 23:55:32 +0100
+  [ Christian Ehrhardt ]
+  * [a99e33e] d/postinst: add libvirtdbus user to libvirt group
+    - This is only done on Ubuntu, where group membership is used
+      instead of polkit to manage access to libvirt (LP: #1802005)
+
+ -- Andrea Bolognani <eof@kiyuko.org>  Fri, 03 Dec 2021 21:44:38 +0100
 
 libvirt-dbus (1.4.0-2) unstable; urgency=medium
 
