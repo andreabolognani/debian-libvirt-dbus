@@ -12,12 +12,12 @@ Build-Depends: debhelper-compat (= 13),
                libvirt-dev (>= 3.0.0),
                libglib2.0-dev (>= 2.44.0),
                libvirt-glib-1.0-dev (>= 0.0.7),
-               dbus,
-               python3,
-               python3-gi,
-               python3-dbus,
+               dbus <!nocheck>,
+               python3:any,
+               python3-gi <!nocheck>,
+               python3-dbus <!nocheck>,
                python3-docutils,
-               python3-pytest
+               python3-pytest <!nocheck>,
 Standards-Version: 4.6.0
 Rules-Requires-Root: no
 
