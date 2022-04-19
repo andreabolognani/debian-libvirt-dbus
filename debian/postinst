@@ -51,7 +51,7 @@ case "$1" in
         # libvirt-dbus, because we don't want to accidentally override local
         # changes to group membership.
         if [ -z "$2" ] || dpkg --compare-versions -- "$2" lt "1.4.1-1"; then
-            if dpkg-vendor --derives-from Ubuntu; then
+            if grep -qs 'ubuntu' /etc/os-release || grep -qs ubuntu /usr/lib/os-release; then
                 if getent group libvirt >/dev/null 2>&1; then
                     adduser libvirtdbus libvirt
                 fi
