@@ -1,3 +1,14 @@
+libvirt-dbus (1.4.1-2) unstable; urgency=medium
+
+  [ Pino Toscano ]
+  * [039dcad] Mark test-only build dependencies as !nocheck
+  * [a4114de] Switch python3 build dependency to python3:any
+
+  [ Martin Pitt ]
+  * [f1e99a2] postinst: Fix check for Ubuntu (LP: #1802005)
+
+ -- Andrea Bolognani <eof@kiyuko.org>  Tue, 19 Apr 2022 23:47:16 +0200
+
 libvirt-dbus (1.4.1-1) unstable; urgency=medium
 
   [ Andrea Bolognani ]
