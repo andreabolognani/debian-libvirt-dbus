@@ -1,6 +1,0 @@
-[Allow libvirt-dbus to manage libvirt]
-Identity=unix-user:libvirtdbus
-Action=org.libvirt.unix.manage
-ResultAny=yes
-ResultInactive=yes
-ResultActive=yes

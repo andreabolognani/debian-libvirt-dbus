@@ -30,9 +30,9 @@ case "$1" in
         # Debian, like upstream, uses policykit to control access to libvirt:
         # specifically, /run/libvirt/libvirt-sock has ownership root:root and
         # permissions 666, but the policy defined in
-        # /var/lib/polkit-1/localauthority/10-vendor.d/60-libvirt.pkla prevents
-        # users other than those in the libvirt group to actually
-        # perform management operations.
+        # /usr/share/polkit-1/rules.d/libvirt-dbus.rules prevents users other
+        # than those in the libvirt group to actually perform management
+        # operations.
         #
         # Ubuntu doesn't use policykit for this, and relies on standard Unix
         # permissions instead: specifically, the socket has ownership
