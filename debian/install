@@ -13,4 +13,3 @@ usr/share/dbus-1/services/org.libvirt.service
 usr/share/dbus-1/system-services/org.libvirt.service
 usr/share/dbus-1/system.d/org.libvirt.conf
 usr/share/polkit-1/rules.d/libvirt-dbus.rules
-var/lib/polkit-1/localauthority/10-vendor.d/libvirt-dbus.pkla

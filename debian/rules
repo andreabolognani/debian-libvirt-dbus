@@ -30,17 +30,11 @@ override_dh_auto_install:
 # Install extra files.
 #
 # The upstream build system takes care of most files, but we also add
-# a few extra taken from both upstream and downstream: this will make
-# it possible to conveniently pick them up using the usual debhelper
-# tools later.
+# a few extra: this will make it possible to conveniently pick them up
+# using the usual debhelper tools later.
 execute_after_dh_auto_install:
 	install -m 0755 -d \
 	        $(DESTDIR)/usr/share/doc/libvirt-dbus/
 	install -m 0644 \
 	        NEWS.rst \
 	        $(DESTDIR)/usr/share/doc/libvirt-dbus/NEWS
-	install -m 0755 -d \
-	        $(DESTDIR)/var/lib/polkit-1/localauthority/10-vendor.d/
-	install -m 0644 \
-	        debian/polkit/libvirt-dbus.pkla \
-	        $(DESTDIR)/var/lib/polkit-1/localauthority/10-vendor.d/
