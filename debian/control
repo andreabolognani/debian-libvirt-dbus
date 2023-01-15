@@ -25,7 +25,8 @@ Package: libvirt-dbus
 Architecture: any
 Depends: dbus,
          default-dbus-session-bus | dbus-session-bus,
-         policykit-1,
+         polkitd,
+         polkitd-pkla,
          libvirt-daemon,
          libvirt-daemon-system,
          adduser,
