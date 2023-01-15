@@ -18,7 +18,7 @@ Build-Depends: debhelper-compat (= 13),
                python3-dbus <!nocheck>,
                python3-docutils,
                python3-pytest <!nocheck>,
-Standards-Version: 4.6.0
+Standards-Version: 4.6.2
 Rules-Requires-Root: no
 
 Package: libvirt-dbus
