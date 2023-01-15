@@ -27,14 +27,14 @@ case "$1" in
                     libvirtdbus
         fi
 
-        # Debian, like upstream, uses policykit to control access to libvirt:
+        # Debian, like upstream, uses polkit to control access to libvirt:
         # specifically, /run/libvirt/libvirt-sock has ownership root:root and
         # permissions 666, but the policy defined in
         # /usr/share/polkit-1/rules.d/libvirt-dbus.rules prevents users other
         # than those in the libvirt group to actually perform management
         # operations.
         #
-        # Ubuntu doesn't use policykit for this, and relies on standard Unix
+        # Ubuntu doesn't use polkit for this, and relies on standard Unix
         # permissions instead: specifically, the socket has ownership
         # root:libvirt and permissions 660.
         #
@@ -44,7 +44,7 @@ case "$1" in
         # For libvirt-dbus to work, the libvirtdbus user that the daemon runs
         # as needs to be able to open a privileged connection to libvirt.
         #
-        # Once again, Debian achieves this through policykit by installing a
+        # Once again, Debian achieves this through polkit by installing a
         # special rule, whereas Ubuntu needs to add the user to the libvirt
         # group, which is what we do here. Note that the user is only added to
         # the group on fresh installs or upgrades from old versions of
