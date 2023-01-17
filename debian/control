@@ -23,7 +23,7 @@ Rules-Requires-Root: no
 
 Package: libvirt-dbus
 Architecture: any
-Depends: dbus,
+Depends: default-dbus-system-bus | dbus-system-bus | dbus,
          default-dbus-session-bus | dbus-session-bus,
          polkitd (>= 121+compat0.1-2),
          libvirt-daemon,
