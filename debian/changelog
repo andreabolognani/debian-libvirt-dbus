@@ -1,3 +1,21 @@
+libvirt-dbus (1.4.1-3) unstable; urgency=medium
+
+  [ Andrea Bolognani ]
+  * [178c4ed] Depend on polkitd instead of policykit-1
+    - Makes it possible to not install / uninstall pkexec
+    - Closes: #1025579
+  * [a352731] Drop polkit rules in legacy pkla format
+    - Makes it possible to not install / uninstall polkitd-pkla
+  * [1e48507] control: Bump Standards-Version to 4.6.2.
+    - No changes needed.
+  * [44a39bb] Don't depend on a specific dbus implementation
+    - libvirt-dbus works just fine with e.g. dbus-broker
+
+  [ Debian Janitor ]
+  * [dfd323f] Remove constraints unnecessary since buster (oldstable)
+
+ -- Andrea Bolognani <eof@kiyuko.org>  Sat, 28 Jan 2023 17:36:08 +0100
+
 libvirt-dbus (1.4.1-2) unstable; urgency=medium
 
   [ Pino Toscano ]
